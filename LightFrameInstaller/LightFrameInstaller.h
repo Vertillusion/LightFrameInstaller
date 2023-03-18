@@ -7,7 +7,7 @@
 #include "resource.h"
 
 #include <json/json.h>
-#include <vui/LightFrame.AA.h>
+#include <VertexUI/VertexUI.min.h>
 #include <curl/curl.h>
 #include <WinDNS.h>
 
