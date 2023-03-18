@@ -3,6 +3,7 @@
 
 #include "framework.h"
 #include "LightFrameInstaller.h"
+#include <VertexUI/VertexUI.Window.hpp>
 
 #define MAX_LOADSTRING 100
 
@@ -80,7 +81,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 	wcex.hIcon		  = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_LIGHTFRAMEINSTALLER));
 	wcex.hCursor		= LoadCursor(nullptr, IDC_ARROW);
 	wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-	wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_LIGHTFRAMEINSTALLER);
+	wcex.lpszMenuName   = NULL;
 	wcex.lpszClassName  = szWindowClass;
 	wcex.hIconSm		= LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
@@ -102,15 +103,30 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    hInst = hInstance; // 将实例句柄存储在全局变量中
 
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-	  CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+	  CW_USEDEFAULT, 0, 600,350, nullptr, nullptr, hInstance, nullptr);
+
+   ShowWindow(hWnd, nCmdShow);
+   UpdateWindow(hWnd);
+
+   SendMessage(hWnd, WM_CREATE, 0, 0);
+   CenterWindow(hWnd);
+   SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+   LONG_PTR Style = ::GetWindowLongPtr(hWnd, GWL_STYLE);
+   Style = Style & ~WS_CAPTION & ~WS_SYSMENU & ~WS_SIZEBOX;
+   ::SetWindowLongPtr(hWnd, GWL_STYLE, Style);
+   VertexUI::Window::OuterShadow::DropShadow Shadow;
+   Shadow.Initialize(0);
+   Shadow.SetSharpness(60);
+   Shadow.SetSize(25);
+   Shadow.SetDarkness(160);
+   Shadow.SetPosition(0, 0);
+   Shadow.Create(hWnd);
 
    if (!hWnd)
    {
 	  return FALSE;
    }
 
-   ShowWindow(hWnd, nCmdShow);
-   UpdateWindow(hWnd);
 
    return TRUE;
 }
@@ -152,6 +168,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	}
 	case WM_MOUSEMOVE: {
+		if (GetPtInfo(hWnd, rc.right - 40, 6, 35, 35))
+		{
+			if (ClickMsg == 1)
+			{
+
+				ClickMsg = 0;
+				PostQuitMessage(0);
+				return 0;
+			}
+		}
 		add_event(Panel1);
 		if (hState == 1) {
 			hState = 0;
@@ -182,18 +208,31 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			PAINTSTRUCT ps;
 			HDC hdc = BeginPaint(hWnd, &ps);
 			// TODO: 在此处添加使用 hdc 的任何绘图代码...
-			//InvalidateRect(h, &rc, 1);
 			CreatePanel(hWnd, hdc, [](HWND hWnd, HDC hdc)->void {
 				RECT rc;
 
-			GetClientRect(hWnd, &rc);
-			CreateFillArea(hWnd, hdc, VERTEXUICOLOR_MIDNIGHT);
+				GetClientRect(hWnd, &rc);
+				CreateFillArea(hWnd, hdc, VERTEXUICOLOR_MIDNIGHT);
 
+				Panel1.Set(hWnd, hdc);
+
+				PanelDrawCloseBtn(hWnd, hdc, rc.right - 34, 6, 25, 25, 4, RGB(187, 192, 201));
+
+				VertexUIControl Confirm;
+				Confirm.CreateCtl(L"Button2", rc.right - 100, rc.bottom - 70, 80, 45,
+					[&,hWnd] {
+						return 0; 
+					}
+				, L"确定", { VERTEXUICOLOR_LAVENDER });
+				Panel1.Add(Confirm);
 
 				});
 			EndPaint(hWnd, &ps);
 		}
 		break;
+	case WM_SIZE: {
+		break;
+	}
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
