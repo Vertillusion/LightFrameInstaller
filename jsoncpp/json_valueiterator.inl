@@ -16,12 +16,12 @@ namespace Json {
 // //////////////////////////////////////////////////////////////////
 
 ValueIteratorBase::ValueIteratorBase()
-    : current_(), isNull_(true) {
+	: current_(), isNull_(true) {
 }
 
 ValueIteratorBase::ValueIteratorBase(
-    const Value::ObjectValues::iterator& current)
-    : current_(current), isNull_(false) {}
+	const Value::ObjectValues::iterator& current)
+	: current_(current), isNull_(false) {}
 
 Value& ValueIteratorBase::deref() const {
   return current_->second;
@@ -46,7 +46,7 @@ ValueIteratorBase::computeDistance(const SelfType& other) const {
   // of the default std::map::iterator, they can not be compared.
   // To allow this, we handle this comparison specifically.
   if (isNull_ && other.isNull_) {
-    return 0;
+	return 0;
   }
 
   // Usage of std::distance is not portable (does not compile with Sun Studio 12
@@ -56,8 +56,8 @@ ValueIteratorBase::computeDistance(const SelfType& other) const {
   //   return difference_type( std::distance( current_, other.current_ ) );
   difference_type myDistance = 0;
   for (Value::ObjectValues::iterator it = current_; it != other.current_;
-       ++it) {
-    ++myDistance;
+	   ++it) {
+	++myDistance;
   }
   return myDistance;
 #endif
@@ -65,7 +65,7 @@ ValueIteratorBase::computeDistance(const SelfType& other) const {
 
 bool ValueIteratorBase::isEqual(const SelfType& other) const {
   if (isNull_) {
-    return other.isNull_;
+	return other.isNull_;
   }
   return current_ == other.current_;
 }
@@ -78,9 +78,9 @@ void ValueIteratorBase::copy(const SelfType& other) {
 Value ValueIteratorBase::key() const {
   const Value::CZString czstring = (*current_).first;
   if (czstring.data()) {
-    if (czstring.isStaticString())
-      return Value(StaticString(czstring.data()));
-    return Value(czstring.data(), czstring.data() + czstring.length());
+	if (czstring.isStaticString())
+	  return Value(StaticString(czstring.data()));
+	return Value(czstring.data(), czstring.data() + czstring.length());
   }
   return Value(czstring.index());
 }
@@ -88,7 +88,7 @@ Value ValueIteratorBase::key() const {
 UInt ValueIteratorBase::index() const {
   const Value::CZString czstring = (*current_).first;
   if (!czstring.data())
-    return czstring.index();
+	return czstring.index();
   return Value::UInt(-1);
 }
 
@@ -108,8 +108,8 @@ char const* ValueIteratorBase::memberName() const {
 char const* ValueIteratorBase::memberName(char const** end) const {
   const char* cname = (*current_).first.data();
   if (!cname) {
-    *end = NULL;
-    return NULL;
+	*end = NULL;
+	return NULL;
   }
   *end = cname + (*current_).first.length();
   return cname;
@@ -126,11 +126,11 @@ char const* ValueIteratorBase::memberName(char const** end) const {
 ValueConstIterator::ValueConstIterator() {}
 
 ValueConstIterator::ValueConstIterator(
-    const Value::ObjectValues::iterator& current)
-    : ValueIteratorBase(current) {}
+	const Value::ObjectValues::iterator& current)
+	: ValueIteratorBase(current) {}
 
 ValueConstIterator::ValueConstIterator(ValueIterator const& other)
-    : ValueIteratorBase(other) {}
+	: ValueIteratorBase(other) {}
 
 ValueConstIterator& ValueConstIterator::
 operator=(const ValueIteratorBase& other) {
@@ -149,15 +149,15 @@ operator=(const ValueIteratorBase& other) {
 ValueIterator::ValueIterator() {}
 
 ValueIterator::ValueIterator(const Value::ObjectValues::iterator& current)
-    : ValueIteratorBase(current) {}
+	: ValueIteratorBase(current) {}
 
 ValueIterator::ValueIterator(const ValueConstIterator& other)
-    : ValueIteratorBase(other) {
+	: ValueIteratorBase(other) {
   throwRuntimeError("ConstIterator to Iterator should never be allowed.");
 }
 
 ValueIterator::ValueIterator(const ValueIterator& other)
-    : ValueIteratorBase(other) {}
+	: ValueIteratorBase(other) {}
 
 ValueIterator& ValueIterator::operator=(const SelfType& other) {
   copy(other);

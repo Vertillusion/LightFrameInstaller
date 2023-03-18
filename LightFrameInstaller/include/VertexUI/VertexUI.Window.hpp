@@ -627,9 +627,9 @@ namespace VertexUI
 				{
 					PAINTSTRUCT ps;
 					HDC hdc = BeginPaint(hWnd, &ps);
-					HDC         hMemDC;
-					HBITMAP     hBmpMem;
-					HBITMAP     hPreBmp;
+					HDC		 hMemDC;
+					HBITMAP	 hBmpMem;
+					HBITMAP	 hPreBmp;
 					ReturnValue = barVal / 3;
 					//InvalidateRect(h, &rc, 1);
 					hMemDC = CreateCompatibleDC(hdc);
@@ -711,7 +711,7 @@ namespace VertexUI
 				return DefWindowProc(hWnd, uMsg, wParam, lParam);
 			}
 			//
-			const wchar_t* SliderszWindowClass = L"LightFrame.Slider.Class";            // 主窗口类名
+			const wchar_t* SliderszWindowClass = L"LightFrame.Slider.Class";			// 主窗口类名
 
 			ATOM SliderBoxRegisterClass(HINSTANCE hInstance)
 			{
@@ -735,7 +735,7 @@ namespace VertexUI
 				return RegisterClassExW(&wcex);
 			}
 			int CreateSliderBox(
-				HWND hWnd, HWND mh = 0, int hmode = 0      // handle 
+				HWND hWnd, HWND mh = 0, int hmode = 0	  // handle 
 			)
 			{
 				EnableWindow(hWnd, FALSE);
@@ -881,9 +881,9 @@ namespace VertexUI
 				{
 					PAINTSTRUCT ps;
 					HDC hdc = BeginPaint(hWnd, &ps);
-					HDC         hMemDC;
-					HBITMAP     hBmpMem;
-					HBITMAP     hPreBmp;
+					HDC		 hMemDC;
+					HBITMAP	 hBmpMem;
+					HBITMAP	 hPreBmp;
 					ReturnValue = barVal / 3;
 					//InvalidateRect(h, &rc, 1);
 					hMemDC = CreateCompatibleDC(hdc);
@@ -990,7 +990,7 @@ namespace VertexUI
 				return DefWindowProc(hWnd, uMsg, wParam, lParam);
 			}
 			//
-			const wchar_t* TimeSelectorszWindowClass = L"LightFrame.TimeSelector.Class";            // 主窗口类名
+			const wchar_t* TimeSelectorszWindowClass = L"LightFrame.TimeSelector.Class";			// 主窗口类名
 
 			ATOM TimeSelectorBoxRegisterClass(HINSTANCE hInstance)
 			{
@@ -1014,7 +1014,7 @@ namespace VertexUI
 				return RegisterClassExW(&wcex);
 			}
 			int CreateTimeSelectorBox(
-				unsigned long& time,HWND hWnd=0, HWND mh = 0, int hmode = 0      // handle 
+				unsigned long& time,HWND hWnd=0, HWND mh = 0, int hmode = 0	  // handle 
 			)
 			{
 				ClickMsg = 0;
@@ -1101,13 +1101,13 @@ namespace VertexUI
 			int hiContainerMode = 0;
 			typedef struct taghiContainerWW
 			{// 
-				HWND hWnd11w;          // handle 
+				HWND hWnd11w;		  // handle 
 
-				LPCTSTR lpText11w;     // text 
+				LPCTSTR lpText11w;	 // text 
 
 				LPCTSTR lpCaption11w;  //  title 
 
-				UINT uType11w;         // style 
+				UINT uType11w;		 // style 
 
 			} iContainer_PARAM1w;
 			int hiContainerIsClosed = 0;
@@ -1202,9 +1202,9 @@ namespace VertexUI
 				{
 					PAINTSTRUCT ps;
 					HDC hdc = BeginPaint(hWnd, &ps);
-					HDC         hMemDC;
-					HBITMAP     hBmpMem;
-					HBITMAP     hPreBmp;
+					HDC		 hMemDC;
+					HBITMAP	 hBmpMem;
+					HBITMAP	 hPreBmp;
 					//InvalidateRect(h, &rc, 1);
 					hMemDC = CreateCompatibleDC(hdc);
 
@@ -1397,7 +1397,7 @@ namespace VertexUI
 				return DefWindowProc(hWnd, uMsg, wParam, lParam);
 			}
 			//
-			const wchar_t* iContainerszWindowClass = L"LightFrame.iContainerctl";            // 主窗口类名
+			const wchar_t* iContainerszWindowClass = L"LightFrame.iContainerctl";			// 主窗口类名
 
 			ATOM iContainerBoxRegisterClass(HINSTANCE hInstance)
 			{
@@ -1421,7 +1421,7 @@ namespace VertexUI
 				return RegisterClassExW(&wcex);
 			}
 			int CreateiContainerBox(
-				HWND mh, ICONTAINER icr, HWND hWnd = 0, int hmode = 0      //OwnerData | Owner
+				HWND mh, ICONTAINER icr, HWND hWnd = 0, int hmode = 0	  //OwnerData | Owner
 			)
 			{
 

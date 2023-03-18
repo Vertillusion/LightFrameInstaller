@@ -18,3 +18,5 @@
 #else
 #pragma comment(lib,"../Release/jsoncpp.lib"
 #endif
+
+VertexUIPanel Panel1;

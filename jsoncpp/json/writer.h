@@ -32,10 +32,10 @@ Usage:
 \code
   using namespace Json;
   void writeToStdout(StreamWriter::Factory const& factory, Value const& value) {
-    std::unique_ptr<StreamWriter> const writer(
-      factory.newStreamWriter());
-    writer->write(value, &std::cout);
-    std::cout << std::endl;  // add lf and flush
+	std::unique_ptr<StreamWriter> const writer(
+	  factory.newStreamWriter());
+	writer->write(value, &std::cout);
+	std::cout << std::endl;  // add lf and flush
   }
 \endcode
 */
@@ -46,10 +46,10 @@ public:
   StreamWriter();
   virtual ~StreamWriter();
   /** Write Value into document as configured in sub-class.
-      Do not take ownership of sout, but maintain a reference during function.
-      \pre sout != NULL
-      \return zero on success (For now, we always return zero, so check the stream instead.)
-      \throw std::exception possibly, depending on configuration
+	  Do not take ownership of sout, but maintain a reference during function.
+	  \pre sout != NULL
+	  \return zero on success (For now, we always return zero, so check the stream instead.)
+	  \throw std::exception possibly, depending on configuration
    */
   virtual int write(Value const& root, JSONCPP_OSTREAM* sout) = 0;
 
@@ -57,11 +57,11 @@ public:
    */
   class JSON_API Factory {
   public:
-    virtual ~Factory();
-    /** \brief Allocate a CharReader via operator new().
-     * \throw std::exception if something goes wrong (e.g. invalid settings)
-     */
-    virtual StreamWriter* newStreamWriter() const = 0;
+	virtual ~Factory();
+	/** \brief Allocate a CharReader via operator new().
+	 * \throw std::exception if something goes wrong (e.g. invalid settings)
+	 */
+	virtual StreamWriter* newStreamWriter() const = 0;
   };  // Factory
 };  // StreamWriter
 
@@ -81,7 +81,7 @@ Usage:
   builder["commentStyle"] = "None";
   builder["indentation"] = "   ";  // or whatever you like
   std::unique_ptr<Json::StreamWriter> writer(
-      builder.newStreamWriter());
+	  builder.newStreamWriter());
   writer->write(value, &std::cout);
   std::cout << std::endl;  // add lf and flush
 \endcode
@@ -91,26 +91,26 @@ public:
   // Note: We use a Json::Value so that we can add data-members to this class
   // without a major version bump.
   /** Configuration of this builder.
-    Available settings (case-sensitive):
-    - "commentStyle": "None" or "All"
-    - "indentation":  "<anything>"
-    - "enableYAMLCompatibility": false or true
-      - slightly change the whitespace around colons
-    - "dropNullPlaceholders": false or true
-      - Drop the "null" string from the writer's output for nullValues.
-        Strictly speaking, this is not valid JSON. But when the output is being
-        fed to a browser's JavaScript, it makes for smaller output and the
-        browser can handle the output just fine.
-    - "useSpecialFloats": false or true
-      - If true, outputs non-finite floating point values in the following way:
-        NaN values as "NaN", positive infinity as "Infinity", and negative infinity
-        as "-Infinity".
+	Available settings (case-sensitive):
+	- "commentStyle": "None" or "All"
+	- "indentation":  "<anything>"
+	- "enableYAMLCompatibility": false or true
+	  - slightly change the whitespace around colons
+	- "dropNullPlaceholders": false or true
+	  - Drop the "null" string from the writer's output for nullValues.
+		Strictly speaking, this is not valid JSON. But when the output is being
+		fed to a browser's JavaScript, it makes for smaller output and the
+		browser can handle the output just fine.
+	- "useSpecialFloats": false or true
+	  - If true, outputs non-finite floating point values in the following way:
+		NaN values as "NaN", positive infinity as "Infinity", and negative infinity
+		as "-Infinity".
 
-    You can examine 'settings_` yourself
-    to see the defaults. You can also write and read them just like any
-    JSON Value.
-    \sa setDefaults()
-    */
+	You can examine 'settings_` yourself
+	to see the defaults. You can also write and read them just like any
+	JSON Value.
+	\sa setDefaults()
+	*/
   Json::Value settings_;
 
   StreamWriterBuilder();
@@ -196,18 +196,18 @@ private:
  *
  * The rules for line break and indent are as follow:
  * - Object value:
- *     - if empty then print {} without indent and line break
- *     - if not empty the print '{', line break & indent, print one value per
+ *	 - if empty then print {} without indent and line break
+ *	 - if not empty the print '{', line break & indent, print one value per
  *line
- *       and then unindent and line break and print '}'.
+ *	   and then unindent and line break and print '}'.
  * - Array value:
- *     - if empty then print [] without indent and line break
- *     - if the array contains no object value, empty array or some other value
+ *	 - if empty then print [] without indent and line break
+ *	 - if the array contains no object value, empty array or some other value
  *types,
- *       and all the values fit on one lines, then print the array on a single
+ *	   and all the values fit on one lines, then print the array on a single
  *line.
- *     - otherwise, it the values do not fit on one line, or the array contains
- *       object or non empty array, then print one value per line.
+ *	 - otherwise, it the values do not fit on one line, or the array contains
+ *	   object or non empty array, then print one value per line.
  *
  * If the Value have comments then they are outputed according to their
  *#CommentPlacement.
@@ -260,22 +260,22 @@ private:
 
 /** \brief Writes a Value in <a HREF="http://www.json.org">JSON</a> format in a
  human friendly way,
-     to a stream rather than to a string.
+	 to a stream rather than to a string.
  *
  * The rules for line break and indent are as follow:
  * - Object value:
- *     - if empty then print {} without indent and line break
- *     - if not empty the print '{', line break & indent, print one value per
+ *	 - if empty then print {} without indent and line break
+ *	 - if not empty the print '{', line break & indent, print one value per
  line
- *       and then unindent and line break and print '}'.
+ *	   and then unindent and line break and print '}'.
  * - Array value:
- *     - if empty then print [] without indent and line break
- *     - if the array contains no object value, empty array or some other value
+ *	 - if empty then print [] without indent and line break
+ *	 - if the array contains no object value, empty array or some other value
  types,
- *       and all the values fit on one lines, then print the array on a single
+ *	   and all the values fit on one lines, then print the array on a single
  line.
- *     - otherwise, it the values do not fit on one line, or the array contains
- *       object or non empty array, then print one value per line.
+ *	 - otherwise, it the values do not fit on one line, or the array contains
+ *	   object or non empty array, then print one value per line.
  *
  * If the Value have comments then they are outputed according to their
  #CommentPlacement.

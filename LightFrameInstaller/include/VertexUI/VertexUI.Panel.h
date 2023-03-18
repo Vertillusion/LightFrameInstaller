@@ -21,7 +21,7 @@
 using namespace Gdiplus;
 #pragma comment(lib, "gdiplus.lib") 
 GdiplusStartupInput gdiplusStartupInput;
-ULONG_PTR           gdiplusToken;
+ULONG_PTR		   gdiplusToken;
 #endif
 #pragma warning(disable:4996)
 #define FullDesign
@@ -658,16 +658,16 @@ namespace VertexUI
 		}
 		void DisplayIco(HDC hdc, RECT rc, HBITMAP hb)
 		{
-			HDC hMemDC = CreateCompatibleDC(hdc);               // 创建一个兼容内存DC
+			HDC hMemDC = CreateCompatibleDC(hdc);			   // 创建一个兼容内存DC
 			HGDIOBJ hOldObj = SelectObject(hMemDC, hb);   // 将g_bitmap选入到这个内存DC
 
 			//BitBlt(hdc, x, y, ICON_WIDTH, ICON_HEIGHT, hMemDC, 0, 0, SRCCOPY);
 
 			BLENDFUNCTION ftn = { 0 };
-			ftn.BlendOp = AC_SRC_OVER;                           // 目前只能设置这个值
-			ftn.AlphaFormat = AC_SRC_ALPHA;                      // 也只能设置这个值
-			ftn.BlendFlags = 0;                                  // 必须为0
-			ftn.SourceConstantAlpha = 255;                       // 指定源图片的alpha
+			ftn.BlendOp = AC_SRC_OVER;						   // 目前只能设置这个值
+			ftn.AlphaFormat = AC_SRC_ALPHA;					  // 也只能设置这个值
+			ftn.BlendFlags = 0;								  // 必须为0
+			ftn.SourceConstantAlpha = 255;					   // 指定源图片的alpha
 
 			// 调用这个函数来进行Alpha混合
 			AlphaBlend(hdc, rc.left + 2, rc.top + 2, 32, 32, hMemDC, 0, 0, 32, 32, ftn);
@@ -679,16 +679,16 @@ namespace VertexUI
 		}
 		void DisplayIcoEx(HDC hdc, RECT rc, HBITMAP hb)
 		{
-			HDC hMemDC = CreateCompatibleDC(hdc);               // 创建一个兼容内存DC
+			HDC hMemDC = CreateCompatibleDC(hdc);			   // 创建一个兼容内存DC
 			HGDIOBJ hOldObj = SelectObject(hMemDC, hb);   // 将g_bitmap选入到这个内存DC
 
 			//BitBlt(hdc, x, y, ICON_WIDTH, ICON_HEIGHT, hMemDC, 0, 0, SRCCOPY);
 
 			BLENDFUNCTION ftn = { 0 };
-			ftn.BlendOp = AC_SRC_OVER;                           // 目前只能设置这个值
-			ftn.AlphaFormat = AC_SRC_ALPHA;                      // 也只能设置这个值
-			ftn.BlendFlags = 0;                                  // 必须为0
-			ftn.SourceConstantAlpha = 255;                       // 指定源图片的alpha
+			ftn.BlendOp = AC_SRC_OVER;						   // 目前只能设置这个值
+			ftn.AlphaFormat = AC_SRC_ALPHA;					  // 也只能设置这个值
+			ftn.BlendFlags = 0;								  // 必须为0
+			ftn.SourceConstantAlpha = 255;					   // 指定源图片的alpha
 
 			// 调用这个函数来进行Alpha混合
 			AlphaBlend(hdc, rc.left + 2, rc.top + 2, rc.right - rc.left, rc.bottom - rc.top, hMemDC, 0, 0, RCWID, rc.bottom - rc.top, ftn);
@@ -973,9 +973,9 @@ namespace VertexUI
 		template<class draw>
 		void _CreatePanel(HWND h, HDC hdc, draw DrawFun)
 		{
-			HDC         hMemDC;
-			HBITMAP     hBmpMem;
-			HBITMAP     hPreBmp;
+			HDC		 hMemDC;
+			HBITMAP	 hBmpMem;
+			HBITMAP	 hPreBmp;
 			RECT rc;
 			GetClientRect(h, &rc);
 			hMemDC = CreateCompatibleDC(hdc);
@@ -998,9 +998,9 @@ namespace VertexUI
 		}
 		void CreatePanelEx(HWND h, HDC hdc, DRAWPANEL DrawFun, int x = 0, int y = 0, int xOf = 0, int yOf = 0)
 		{
-			HDC         hMemDC;
-			HBITMAP     hBmpMem;
-			HBITMAP     hPreBmp;
+			HDC		 hMemDC;
+			HBITMAP	 hBmpMem;
+			HBITMAP	 hPreBmp;
 			RECT rc;
 			GetClientRect(h, &rc);
 			if (xOf == 0)xOf = rc.right - rc.left;
@@ -1026,9 +1026,9 @@ namespace VertexUI
 		{
 			if (0 == CachedDC)
 			{
-				HDC         hMemDC;
-				HBITMAP     hBmpMem;
-				HBITMAP     hPreBmp;
+				HDC		 hMemDC;
+				HBITMAP	 hBmpMem;
+				HBITMAP	 hPreBmp;
 				RECT rc;
 				GetClientRect(h, &rc);
 				hMemDC = CreateCompatibleDC(hdc);
@@ -1054,9 +1054,9 @@ namespace VertexUI
 		//
 		void CreatePanel(HWND h, HDC hdc, DRAWPANEL DrawFun)
 		{
-			HDC         hMemDC;
-			HBITMAP     hBmpMem;
-			HBITMAP     hPreBmp;
+			HDC		 hMemDC;
+			HBITMAP	 hBmpMem;
+			HBITMAP	 hPreBmp;
 			RECT rc;
 			GetClientRect(h, &rc);
 			hMemDC = CreateCompatibleDC(hdc);
@@ -1253,9 +1253,9 @@ namespace VertexUI::Panel
 			StretchBlt(hdc, 0, 0, vp.cx * s, vp.cy * s, hMemDC1, vp.x, vp.y, vp.cx, vp.cy, SRCCOPY);
 
 
-			HDC         hMemDC2;
-			HBITMAP     hBmpMem2;
-			HBITMAP     hPreBmp2;
+			HDC		 hMemDC2;
+			HBITMAP	 hBmpMem2;
+			HBITMAP	 hPreBmp2;
 
 			hMemDC2 = CreateCompatibleDC(hdc);
 
@@ -1264,9 +1264,9 @@ namespace VertexUI::Panel
 			hPreBmp2 = (HBITMAP)SelectObject(hMemDC2, hBmpMem2);
 
 
-			HDC         hMemDC3;
-			HBITMAP     hBmpMem3;
-			HBITMAP     hPreBmp3;
+			HDC		 hMemDC3;
+			HBITMAP	 hBmpMem3;
+			HBITMAP	 hPreBmp3;
 
 			hMemDC3 = CreateCompatibleDC(hdc);
 
@@ -1357,9 +1357,9 @@ namespace VertexUI::Panel
 
 
 
-		HDC         hMemDC3;
-		HBITMAP     hBmpMem3;
-		HBITMAP     hPreBmp3;
+		HDC		 hMemDC3;
+		HBITMAP	 hBmpMem3;
+		HBITMAP	 hPreBmp3;
 
 		hMemDC3 = CreateCompatibleDC(hdc);
 
@@ -1558,9 +1558,9 @@ namespace VertexUI::Panel
 			bf.AlphaFormat = 0;
 			for (int t = 1; t < t + 1; t++)
 			{
-				HDC         hMemDC;
-				HBITMAP     hBmpMem;
-				HBITMAP     hPreBmp;
+				HDC		 hMemDC;
+				HBITMAP	 hBmpMem;
+				HBITMAP	 hPreBmp;
 				hMemDC = CreateCompatibleDC(hdc);
 
 				hBmpMem = CreateCompatibleBitmap(hdc, vp.cx, vp.cy);
@@ -1722,9 +1722,9 @@ namespace VertexUI::Panel
 		bf.AlphaFormat = 0;
 		for (int t = 1; t < t + 1; t++)
 		{
-			HDC         hMemDC;
-			HBITMAP     hBmpMem;
-			HBITMAP     hPreBmp;
+			HDC		 hMemDC;
+			HBITMAP	 hBmpMem;
+			HBITMAP	 hPreBmp;
 			hMemDC = CreateCompatibleDC(hdc);
 
 			hBmpMem = CreateCompatibleBitmap(hdc, rc.right - rc.left, rc.bottom - rc.top);
@@ -1830,9 +1830,9 @@ namespace VertexUI::Panel
 		bf.SourceConstantAlpha = 1;
 		bf.AlphaFormat = 0;
 
-		HDC         hMemDC;
-		HBITMAP     hBmpMem;
-		HBITMAP     hPreBmp;
+		HDC		 hMemDC;
+		HBITMAP	 hBmpMem;
+		HBITMAP	 hPreBmp;
 		hMemDC = CreateCompatibleDC(hdc);
 
 		hBmpMem = CreateCompatibleBitmap(hdc, rc.right - rc.left, rc.bottom - rc.top);
@@ -1951,9 +1951,9 @@ namespace VertexUI::Panel
 	template<class draw>
 	int CreatePanelAnimation(HWND h, HDC hdc, draw DrawFun)
 	{
-		HDC         hMemDC;
-		HBITMAP     hBmpMem;
-		HBITMAP     hPreBmp;
+		HDC		 hMemDC;
+		HBITMAP	 hBmpMem;
+		HBITMAP	 hPreBmp;
 		RECT rc;
 		GetClientRect(h, &rc);
 		//InvalidateRect(h, &rc, 1);
@@ -2001,9 +2001,9 @@ namespace VertexUI::Panel
 	template<class draw>
 	int CreatePanelAnimationEx(HWND h, HDC hdc, draw DrawFun, int Flag)
 	{
-		HDC         hMemDC;
-		HBITMAP     hBmpMem;
-		HBITMAP     hPreBmp;
+		HDC		 hMemDC;
+		HBITMAP	 hBmpMem;
+		HBITMAP	 hPreBmp;
 		RECT rc;
 		GetClientRect(h, &rc);
 		//InvalidateRect(h, &rc, 1);
@@ -2117,9 +2117,9 @@ namespace VertexUI::Panel
 					//BitBlt
 					RECT rc;
 					GetClientRect(h, &rc);
-					HDC         hMemDC;
-					HBITMAP     hBmpMem;
-					HBITMAP     hPreBmp;
+					HDC		 hMemDC;
+					HBITMAP	 hBmpMem;
+					HBITMAP	 hPreBmp;
 
 					hMemDC = CreateCompatibleDC(hdc);
 
@@ -2142,8 +2142,8 @@ namespace VertexUI::Panel
 				if (dystate == 1) //First time
 				{
 					DeleteDC(inhdc);
-					HBITMAP     hBmpMem;
-					HBITMAP     hPreBmp;
+					HBITMAP	 hBmpMem;
+					HBITMAP	 hPreBmp;
 					RECT rc;
 					GetClientRect(h, &rc);
 					inhdc = CreateCompatibleDC(hdc);
@@ -2166,8 +2166,8 @@ namespace VertexUI::Panel
 				if (dystate == 2) //First time
 				{
 					DeleteDC(inhdc);
-					HBITMAP     hBmpMem;
-					HBITMAP     hPreBmp;
+					HBITMAP	 hBmpMem;
+					HBITMAP	 hPreBmp;
 					RECT rc;
 					GetClientRect(h, &rc);
 					inhdc = CreateCompatibleDC(hdc);
@@ -2980,9 +2980,9 @@ namespace VertexUI::Panel
 	void _CreateListPanel(HWND h, HDC hdc, VERTEXUILISTPANEL vlp, DRAWPANEL exDraw = 0)
 	{
 
-		HDC         hMemDC;
-		HBITMAP     hBmpMem;
-		HBITMAP     hPreBmp;
+		HDC		 hMemDC;
+		HBITMAP	 hBmpMem;
+		HBITMAP	 hPreBmp;
 		RECT rc;
 		GetClientRect(h, &rc);
 		hMemDC = CreateCompatibleDC(hdc);
@@ -3009,9 +3009,9 @@ namespace VertexUI::Panel
 	}
 	int _CreateListPanelAnimation(HWND h, HDC hdc, VERTEXUILISTPANEL vlp, DRAWPANEL exDraw = 0)
 	{
-		HDC         hMemDC;
-		HBITMAP     hBmpMem;
-		HBITMAP     hPreBmp;
+		HDC		 hMemDC;
+		HBITMAP	 hBmpMem;
+		HBITMAP	 hPreBmp;
 		RECT rc;
 		GetClientRect(h, &rc);
 		//InvalidateRect(h, &rc, 1);
@@ -3146,9 +3146,9 @@ AddBoxClickAreaDDraw(hWnd,lParam,58,40+10,120,40,GoPagePrev,[hWnd]{HDC hdc=GetDC
 	tagVertexUIView VertexUIView;
 	void _CreateViewPanel(HWND h, HDC hdc, VERTEXUIVIEWPANEL vlp, DRAWPANEL exDraw = 0)
 	{
-		HDC         hMemDC;
-		HBITMAP     hBmpMem;
-		HBITMAP     hPreBmp;
+		HDC		 hMemDC;
+		HBITMAP	 hBmpMem;
+		HBITMAP	 hPreBmp;
 		RECT rc;
 		GetClientRect(h, &rc);
 		hMemDC = CreateCompatibleDC(hdc);
@@ -3175,9 +3175,9 @@ AddBoxClickAreaDDraw(hWnd,lParam,58,40+10,120,40,GoPagePrev,[hWnd]{HDC hdc=GetDC
 	}
 	int _CreateViewPanelAnimation(HWND h, HDC hdc, VERTEXUIVIEWPANEL vlp, DRAWPANEL exDraw = 0)
 	{
-		HDC         hMemDC;
-		HBITMAP     hBmpMem;
-		HBITMAP     hPreBmp;
+		HDC		 hMemDC;
+		HBITMAP	 hBmpMem;
+		HBITMAP	 hPreBmp;
 		RECT rc;
 		GetClientRect(h, &rc);
 		//InvalidateRect(h, &rc, 1);

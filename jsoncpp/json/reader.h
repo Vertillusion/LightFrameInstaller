@@ -44,9 +44,9 @@ public:
    *
    */
   struct StructuredError {
-    ptrdiff_t offset_start;
-    ptrdiff_t offset_limit;
-    JSONCPP_STRING message;
+	ptrdiff_t offset_start;
+	ptrdiff_t offset_limit;
+	JSONCPP_STRING message;
   };
 
   /** \brief Constructs a Reader allowing all features
@@ -63,13 +63,13 @@ public:
    * document.
    * \param document UTF-8 encoded string containing the document to read.
    * \param root [out] Contains the root value of the document if it was
-   *             successfully parsed.
+   *			 successfully parsed.
    * \param collectComments \c true to collect comment and allow writing them
    * back during
-   *                        serialization, \c false to discard comments.
-   *                        This parameter is ignored if
+   *						serialization, \c false to discard comments.
+   *						This parameter is ignored if
    * Features::allowComments_
-   *                        is \c false.
+   *						is \c false.
    * \return \c true if the document was successfully parsed, \c false if an
    * error occurred.
    */
@@ -82,22 +82,22 @@ public:
    document to read.
    * \param endDoc Pointer on the end of the UTF-8 encoded string of the
    document to read.
-   *               Must be >= beginDoc.
+   *			   Must be >= beginDoc.
    * \param root [out] Contains the root value of the document if it was
-   *             successfully parsed.
+   *			 successfully parsed.
    * \param collectComments \c true to collect comment and allow writing them
    back during
-   *                        serialization, \c false to discard comments.
-   *                        This parameter is ignored if
+   *						serialization, \c false to discard comments.
+   *						This parameter is ignored if
    Features::allowComments_
-   *                        is \c false.
+   *						is \c false.
    * \return \c true if the document was successfully parsed, \c false if an
    error occurred.
    */
   bool parse(const char* beginDoc,
-             const char* endDoc,
-             Value& root,
-             bool collectComments = true);
+			 const char* endDoc,
+			 Value& root,
+			 bool collectComments = true);
 
   /// \brief Parse from input stream.
   /// \see Json::operator>>(std::istream&, Json::Value&).
@@ -107,9 +107,9 @@ public:
    * document.
    * \return Formatted error message with the list of errors with their location
    * in
-   *         the parsed document. An empty string is returned if no error
+   *		 the parsed document. An empty string is returned if no error
    * occurred
-   *         during parsing.
+   *		 during parsing.
    * \deprecated Use getFormattedErrorMessages() instead (typo fix).
    */
   JSONCPP_DEPRECATED("Use getFormattedErrorMessages() instead.")
@@ -119,18 +119,18 @@ public:
    * document.
    * \return Formatted error message with the list of errors with their location
    * in
-   *         the parsed document. An empty string is returned if no error
+   *		 the parsed document. An empty string is returned if no error
    * occurred
-   *         during parsing.
+   *		 during parsing.
    */
   JSONCPP_STRING getFormattedErrorMessages() const;
 
   /** \brief Returns a vector of structured erros encounted while parsing.
    * \return A (possibly empty) vector of StructuredError objects. Currently
-   *         only one error can be returned, but the caller should tolerate
+   *		 only one error can be returned, but the caller should tolerate
    * multiple
-   *         errors.  This can occur if the parser recovers from a non-fatal
-   *         parse error and then encounters additional errors.
+   *		 errors.  This can occur if the parser recovers from a non-fatal
+   *		 parse error and then encounters additional errors.
    */
   std::vector<StructuredError> getStructuredErrors() const;
 
@@ -159,34 +159,34 @@ public:
 
 private:
   enum TokenType {
-    tokenEndOfStream = 0,
-    tokenObjectBegin,
-    tokenObjectEnd,
-    tokenArrayBegin,
-    tokenArrayEnd,
-    tokenString,
-    tokenNumber,
-    tokenTrue,
-    tokenFalse,
-    tokenNull,
-    tokenArraySeparator,
-    tokenMemberSeparator,
-    tokenComment,
-    tokenError
+	tokenEndOfStream = 0,
+	tokenObjectBegin,
+	tokenObjectEnd,
+	tokenArrayBegin,
+	tokenArrayEnd,
+	tokenString,
+	tokenNumber,
+	tokenTrue,
+	tokenFalse,
+	tokenNull,
+	tokenArraySeparator,
+	tokenMemberSeparator,
+	tokenComment,
+	tokenError
   };
 
   class Token {
   public:
-    TokenType type_;
-    Location start_;
-    Location end_;
+	TokenType type_;
+	Location start_;
+	Location end_;
   };
 
   class ErrorInfo {
   public:
-    Token token_;
-    JSONCPP_STRING message_;
-    Location extra_;
+	Token token_;
+	JSONCPP_STRING message_;
+	Location extra_;
   };
 
   typedef std::deque<ErrorInfo> Errors;
@@ -209,18 +209,18 @@ private:
   bool decodeDouble(Token& token);
   bool decodeDouble(Token& token, Value& decoded);
   bool decodeUnicodeCodePoint(Token& token,
-                              Location& current,
-                              Location end,
-                              unsigned int& unicode);
+							  Location& current,
+							  Location end,
+							  unsigned int& unicode);
   bool decodeUnicodeEscapeSequence(Token& token,
-                                   Location& current,
-                                   Location end,
-                                   unsigned int& unicode);
+								   Location& current,
+								   Location end,
+								   unsigned int& unicode);
   bool addError(const JSONCPP_STRING& message, Token& token, Location extra = 0);
   bool recoverFromError(TokenType skipUntilToken);
   bool addErrorAndRecover(const JSONCPP_STRING& message,
-                          Token& token,
-                          TokenType skipUntilToken);
+						  Token& token,
+						  TokenType skipUntilToken);
   void skipUntilSpace();
   Value& currentValue();
   Char getNextChar();
@@ -260,26 +260,26 @@ public:
    document to read.
    * \param endDoc Pointer on the end of the UTF-8 encoded string of the
    document to read.
-   *        Must be >= beginDoc.
+   *		Must be >= beginDoc.
    * \param root [out] Contains the root value of the document if it was
-   *             successfully parsed.
+   *			 successfully parsed.
    * \param errs [out] Formatted error messages (if not NULL)
-   *        a user friendly string that lists errors in the parsed
+   *		a user friendly string that lists errors in the parsed
    * document.
    * \return \c true if the document was successfully parsed, \c false if an
    error occurred.
    */
   virtual bool parse(
-      char const* beginDoc, char const* endDoc,
-      Value* root, JSONCPP_STRING* errs) = 0;
+	  char const* beginDoc, char const* endDoc,
+	  Value* root, JSONCPP_STRING* errs) = 0;
 
   class JSON_API Factory {
   public:
-    virtual ~Factory() {}
-    /** \brief Allocate a CharReader via operator new().
-     * \throw std::exception if something goes wrong (e.g. invalid settings)
-     */
-    virtual CharReader* newCharReader() const = 0;
+	virtual ~Factory() {}
+	/** \brief Allocate a CharReader via operator new().
+	 * \throw std::exception if something goes wrong (e.g. invalid settings)
+	 */
+	virtual CharReader* newCharReader() const = 0;
   };  // Factory
 };  // CharReader
 
@@ -300,41 +300,41 @@ public:
   // Note: We use a Json::Value so that we can add data-members to this class
   // without a major version bump.
   /** Configuration of this builder.
-    These are case-sensitive.
-    Available settings (case-sensitive):
-    - `"collectComments": false or true`
-      - true to collect comment and allow writing them
-        back during serialization, false to discard comments.
-        This parameter is ignored if allowComments is false.
-    - `"allowComments": false or true`
-      - true if comments are allowed.
-    - `"strictRoot": false or true`
-      - true if root must be either an array or an object value
-    - `"allowDroppedNullPlaceholders": false or true`
-      - true if dropped null placeholders are allowed. (See StreamWriterBuilder.)
-    - `"allowNumericKeys": false or true`
-      - true if numeric object keys are allowed.
-    - `"allowSingleQuotes": false or true`
-      - true if '' are allowed for strings (both keys and values)
-    - `"stackLimit": integer`
-      - Exceeding stackLimit (recursive depth of `readValue()`) will
-        cause an exception.
-      - This is a security issue (seg-faults caused by deeply nested JSON),
-        so the default is low.
-    - `"failIfExtra": false or true`
-      - If true, `parse()` returns false when extra non-whitespace trails
-        the JSON value in the input string.
-    - `"rejectDupKeys": false or true`
-      - If true, `parse()` returns false when a key is duplicated within an object.
-    - `"allowSpecialFloats": false or true`
-      - If true, special float values (NaNs and infinities) are allowed 
-        and their values are lossfree restorable.
+	These are case-sensitive.
+	Available settings (case-sensitive):
+	- `"collectComments": false or true`
+	  - true to collect comment and allow writing them
+		back during serialization, false to discard comments.
+		This parameter is ignored if allowComments is false.
+	- `"allowComments": false or true`
+	  - true if comments are allowed.
+	- `"strictRoot": false or true`
+	  - true if root must be either an array or an object value
+	- `"allowDroppedNullPlaceholders": false or true`
+	  - true if dropped null placeholders are allowed. (See StreamWriterBuilder.)
+	- `"allowNumericKeys": false or true`
+	  - true if numeric object keys are allowed.
+	- `"allowSingleQuotes": false or true`
+	  - true if '' are allowed for strings (both keys and values)
+	- `"stackLimit": integer`
+	  - Exceeding stackLimit (recursive depth of `readValue()`) will
+		cause an exception.
+	  - This is a security issue (seg-faults caused by deeply nested JSON),
+		so the default is low.
+	- `"failIfExtra": false or true`
+	  - If true, `parse()` returns false when extra non-whitespace trails
+		the JSON value in the input string.
+	- `"rejectDupKeys": false or true`
+	  - If true, `parse()` returns false when a key is duplicated within an object.
+	- `"allowSpecialFloats": false or true`
+	  - If true, special float values (NaNs and infinities) are allowed 
+		and their values are lossfree restorable.
 
-    You can examine 'settings_` yourself
-    to see the defaults. You can also write and read them just like any
-    JSON Value.
-    \sa setDefaults()
-    */
+	You can examine 'settings_` yourself
+	to see the defaults. You can also write and read them just like any
+	JSON Value.
+	\sa setDefaults()
+	*/
   Json::Value settings_;
 
   CharReaderBuilder();
@@ -370,9 +370,9 @@ public:
   * is convenient.
   */
 bool JSON_API parseFromStream(
-    CharReader::Factory const&,
-    JSONCPP_ISTREAM&,
-    Value* root, std::string* errs);
+	CharReader::Factory const&,
+	JSONCPP_ISTREAM&,
+	Value* root, std::string* errs);
 
 /** \brief Read from 'sin' into 'root'.
 
@@ -389,9 +389,9 @@ bool JSON_API parseFromStream(
  \verbatim
  {
  "dir": {
-     "file": {
-     // The input stream JSON would be nested here.
-     }
+	 "file": {
+	 // The input stream JSON would be nested here.
+	 }
  }
  }
  \endverbatim

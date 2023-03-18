@@ -409,110 +409,110 @@ void ClickAreaBoxHoverAnimation(HWND hWnd, HDC hdc, RECT rc)
 	CreateRect(hWnd, hdc, rc.left, rc.bottom - 5, (rc.right - rc.left), 5, VERTEXUICOLOR_LAVENDER);
 }
 #define AddBoxClickArea(hWnd,lParam,x,y,cx,cy,runfun) if ((GetPtInfo(hWnd, x, y, cx, cy, rc)) == 1)\
-        {\
-        if (ClickMsg == 1)\
-        {\
-            ClickMsg = 0;\
-            runfun();\
-        }\
-        if (hState == 0)\
-        {\
-            HDC hdc = GetDC(hWnd);\
-            CreateRect(hWnd, hdc, rc.left, rc.bottom - 5, (rc.right - rc.left), 5, VERTEXUICOLOR_LAVENDER);\
-            DeleteObject(hdc);\
-            ReleaseDC(hWnd, hdc);\
-            DeleteDC(hdc);\
-            hState = 1;\
-        }\
-        return 0;\
-        }
+		{\
+		if (ClickMsg == 1)\
+		{\
+			ClickMsg = 0;\
+			runfun();\
+		}\
+		if (hState == 0)\
+		{\
+			HDC hdc = GetDC(hWnd);\
+			CreateRect(hWnd, hdc, rc.left, rc.bottom - 5, (rc.right - rc.left), 5, VERTEXUICOLOR_LAVENDER);\
+			DeleteObject(hdc);\
+			ReleaseDC(hWnd, hdc);\
+			DeleteDC(hdc);\
+			hState = 1;\
+		}\
+		return 0;\
+		}
 #define AddBoxClickAreaDDraw(hWnd,lParam,x,y,cx,cy,runfun,ia) if ((GetAreaPtInfo(hWnd, x, y, cx, cy, rc, lParam)) == 1)\
-        {\
-        if (ClickMsg == 1)\
-        {\
-            ClickMsg = 0;\
-            runfun();\
-        }\
-        if (hState == 0)\
-        {\
-            ia();\
-            hState = 1;\
-        }\
-        return 0;\
-        }
+		{\
+		if (ClickMsg == 1)\
+		{\
+			ClickMsg = 0;\
+			runfun();\
+		}\
+		if (hState == 0)\
+		{\
+			ia();\
+			hState = 1;\
+		}\
+		return 0;\
+		}
 #define AddBoxClickArea_Animation(hWnd,lParam,x,y,cx,cy,runfun) if ((GetAreaPtInfo(hWnd, x, y, cx, cy, rc, lParam)) == 1)\
-        {\
-        if (ClickMsg == 1)\
-        {\
-            ClickMsg = 0;\
-            runfun();\
-        }\
-        if (hState == 0)\
-        {\
-            HDC hdc = GetDC(hWnd);\
-            ClickAreaBoxHoverAnimation(hWnd,hdc,rc);\
-            DeleteObject(hdc);\
-            ReleaseDC(hWnd, hdc);\
-            DeleteDC(hdc);\
-            hState = 1;\
-        }\
-        return 0;\
-        }
+		{\
+		if (ClickMsg == 1)\
+		{\
+			ClickMsg = 0;\
+			runfun();\
+		}\
+		if (hState == 0)\
+		{\
+			HDC hdc = GetDC(hWnd);\
+			ClickAreaBoxHoverAnimation(hWnd,hdc,rc);\
+			DeleteObject(hdc);\
+			ReleaseDC(hWnd, hdc);\
+			DeleteDC(hdc);\
+			hState = 1;\
+		}\
+		return 0;\
+		}
 
 //窗口,鼠标传参,x,y,大小,大小,x偏移量,大小偏移量,高度偏移量,颜色,运行
 
 
 #define AddBoxClickAreaEx(hWnd,lParam,x,y,cx,cy,x1,wsize,hsize,color,runfun) if ((GetAreaPtInfo(hWnd, x, y, cx, cy, rc, lParam)) == 1)\
-        {\
-        if (ClickMsg == 1)\
-        {\
-            ClickMsg = 0;\
-            runfun();\
-        }\
-        if (hState == 0)\
-        {\
-            HDC hdc = GetDC(hWnd);\
-            CreateRect(hWnd, hdc, rc.left + x1, rc.bottom - hsize, rc.right - rc.left - wsize, hsize,color);\
-            DeleteObject(hdc);\
-            ReleaseDC(hWnd, hdc);\
-            DeleteDC(hdc);\
-            hState = 1;\
-        }\
-        return 0;\
-        }
+		{\
+		if (ClickMsg == 1)\
+		{\
+			ClickMsg = 0;\
+			runfun();\
+		}\
+		if (hState == 0)\
+		{\
+			HDC hdc = GetDC(hWnd);\
+			CreateRect(hWnd, hdc, rc.left + x1, rc.bottom - hsize, rc.right - rc.left - wsize, hsize,color);\
+			DeleteObject(hdc);\
+			ReleaseDC(hWnd, hdc);\
+			DeleteDC(hdc);\
+			hState = 1;\
+		}\
+		return 0;\
+		}
 
 #define AddBoxClickAreaExExit(hWnd,lParam,x,y,cx,cy,x1,wsize,hsize,color,runfun) if ((GetAreaPtInfo(hWnd, x, y, cx, cy, rc, lParam)) == 1)\
-        {\
-        if (ClickMsg == 1)\
-        {\
-            ClickMsg = 0;\
-            runfun();\
-            DestroyWindow(hWnd);\
-        }\
-        if (hState == 0)\
-        {\
-            HDC hdc = GetDC(hWnd);\
-            CreateRect(hWnd, hdc, rc.left + x1, rc.bottom - hsize, rc.right - rc.left - wsize, hsize,color);\
-            DeleteObject(hdc);\
-            ReleaseDC(hWnd, hdc);\
-            DeleteDC(hdc);\
-            hState = 1;\
-        }\
-        return 0;\
-        }
+		{\
+		if (ClickMsg == 1)\
+		{\
+			ClickMsg = 0;\
+			runfun();\
+			DestroyWindow(hWnd);\
+		}\
+		if (hState == 0)\
+		{\
+			HDC hdc = GetDC(hWnd);\
+			CreateRect(hWnd, hdc, rc.left + x1, rc.bottom - hsize, rc.right - rc.left - wsize, hsize,color);\
+			DeleteObject(hdc);\
+			ReleaseDC(hWnd, hdc);\
+			DeleteDC(hdc);\
+			hState = 1;\
+		}\
+		return 0;\
+		}
 
 #define _AddBoxClickAreaEx(hWnd,lParam,x,y,cx,cy,x1,wsize,hsize,color,runfun,dwf) if ((GetAreaPtInfo(hWnd, x, y, cx, cy, rc, lParam)) == 1)\
-        {\
-        if (ClickMsg == 1)\
-        {\
-            ClickMsg = 0;\
-            runfun();\
-        }\
-        if (hState == 0)\
-        {\
-            dwf\
-            hState = 1;\
-        }\
-        return 0;\
-        }
+		{\
+		if (ClickMsg == 1)\
+		{\
+			ClickMsg = 0;\
+			runfun();\
+		}\
+		if (hState == 0)\
+		{\
+			dwf\
+			hState = 1;\
+		}\
+		return 0;\
+		}
 #define AddCtlEvent(hWnd,lParam,ctl) AddBoxClickArea(hWnd,lParam,ctl.x,ctl.y,ctl.sizex,ctl.sizey,ctl.runfun)

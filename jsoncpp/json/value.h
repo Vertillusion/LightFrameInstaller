@@ -27,11 +27,11 @@
 // b) possibly improve optimization opportunities.
 #if !defined(JSONCPP_NORETURN)
 #  if defined(_MSC_VER)
-#    define JSONCPP_NORETURN __declspec(noreturn)
+#	define JSONCPP_NORETURN __declspec(noreturn)
 #  elif defined(__GNUC__)
-#    define JSONCPP_NORETURN __attribute__ ((__noreturn__))
+#	define JSONCPP_NORETURN __attribute__ ((__noreturn__))
 #  else
-#    define JSONCPP_NORETURN
+#	define JSONCPP_NORETURN
 #  endif
 #endif
 
@@ -92,17 +92,17 @@ JSONCPP_NORETURN void throwLogicError(JSONCPP_STRING const& msg);
  */
 enum ValueType {
   nullValue = 0, ///< 'null' value
-  intValue,      ///< signed integer value
-  uintValue,     ///< unsigned integer value
-  realValue,     ///< double value
+  intValue,	  ///< signed integer value
+  uintValue,	 ///< unsigned integer value
+  realValue,	 ///< double value
   stringValue,   ///< UTF-8 string value
   booleanValue,  ///< bool value
-  arrayValue,    ///< array value (ordered list)
-  objectValue    ///< object value (collection of name/value pairs).
+  arrayValue,	///< array value (ordered list)
+  objectValue	///< object value (collection of name/value pairs).
 };
 
 enum CommentPlacement {
-  commentBefore = 0,      ///< a comment placed on the line before a value
+  commentBefore = 0,	  ///< a comment placed on the line before a value
   commentAfterOnSameLine, ///< a comment just after a value on the same line
   commentAfter, ///< a comment on the line after a value (only make sense for
   /// root value)
@@ -224,45 +224,45 @@ private:
 #ifndef JSONCPP_DOC_EXCLUDE_IMPLEMENTATION
   class CZString {
   public:
-    enum DuplicationPolicy {
-      noDuplication = 0,
-      duplicate,
-      duplicateOnCopy
-    };
-    CZString(ArrayIndex index);
-    CZString(char const* str, unsigned length, DuplicationPolicy allocate);
-    CZString(CZString const& other);
+	enum DuplicationPolicy {
+	  noDuplication = 0,
+	  duplicate,
+	  duplicateOnCopy
+	};
+	CZString(ArrayIndex index);
+	CZString(char const* str, unsigned length, DuplicationPolicy allocate);
+	CZString(CZString const& other);
 #if JSON_HAS_RVALUE_REFERENCES
-    CZString(CZString&& other);
+	CZString(CZString&& other);
 #endif
-    ~CZString();
-    CZString& operator=(const CZString& other);
+	~CZString();
+	CZString& operator=(const CZString& other);
 
 #if JSON_HAS_RVALUE_REFERENCES
-    CZString& operator=(CZString&& other);
+	CZString& operator=(CZString&& other);
 #endif
 
-    bool operator<(CZString const& other) const;
-    bool operator==(CZString const& other) const;
-    ArrayIndex index() const;
-    //const char* c_str() const; ///< \deprecated
-    char const* data() const;
-    unsigned length() const;
-    bool isStaticString() const;
+	bool operator<(CZString const& other) const;
+	bool operator==(CZString const& other) const;
+	ArrayIndex index() const;
+	//const char* c_str() const; ///< \deprecated
+	char const* data() const;
+	unsigned length() const;
+	bool isStaticString() const;
 
   private:
-    void swap(CZString& other);
+	void swap(CZString& other);
 
-    struct StringStorage {
-      unsigned policy_: 2;
-      unsigned length_: 30; // 1GB max
-    };
+	struct StringStorage {
+	  unsigned policy_: 2;
+	  unsigned length_: 30; // 1GB max
+	};
 
-    char const* cstr_;  // actually, a prefixed string, unless policy is noDup
-    union {
-      ArrayIndex index_;
-      StringStorage storage_;
-    };
+	char const* cstr_;  // actually, a prefixed string, unless policy is noDup
+	union {
+	  ArrayIndex index_;
+	  StringStorage storage_;
+	};
   };
 
 public:
@@ -276,13 +276,13 @@ public:
 public:
   /** \brief Create a default Value of the given type.
 
-    This is a very useful constructor.
-    To create an empty array, pass arrayValue.
-    To create an empty object, pass objectValue.
-    Another Value can then be set to this one by assignment.
+	This is a very useful constructor.
+	To create an empty array, pass arrayValue.
+	To create an empty object, pass objectValue.
+	Another Value can then be set to this one by assignment.
 This is useful since clear() and resize() will not alter types.
 
-    Examples:
+	Examples:
 \code
 Json::Value null_value; // null
 Json::Value arr_value(Json::arrayValue); // []
@@ -362,7 +362,7 @@ Json::Value obj_value(Json::objectValue); // {}
    *  \return false if !string. (Seg-fault if str or end are NULL.)
    */
   bool getString(
-      char const** begin, char const** end) const;
+	  char const** begin, char const** end) const;
 #ifdef JSON_USE_CPPTL
   CppTL::ConstString asConstString() const;
 #endif
@@ -531,18 +531,18 @@ Json::Value obj_value(Json::objectValue); // {}
   bool removeMember(const char* key, Value* removed);
   /** \brief Remove the named map member.
 
-      Update 'removed' iff removed.
-      \param key may contain embedded nulls.
-      \return true iff removed (no exceptions)
+	  Update 'removed' iff removed.
+	  \param key may contain embedded nulls.
+	  \return true iff removed (no exceptions)
   */
   bool removeMember(JSONCPP_STRING const& key, Value* removed);
   /// Same as removeMember(JSONCPP_STRING const& key, Value* removed)
   bool removeMember(const char* begin, const char* end, Value* removed);
   /** \brief Remove the indexed array element.
 
-      O(n) expensive operations.
-      Update 'removed' iff removed.
-      \return true iff removed (no exceptions)
+	  O(n) expensive operations.
+	  Update 'removed' iff removed.
+	  \return true iff removed (no exceptions)
   */
   bool removeIndex(ArrayIndex i, Value* removed);
 
@@ -567,8 +567,8 @@ Json::Value obj_value(Json::objectValue); // {}
   Members getMemberNames() const;
 
   //# ifdef JSON_USE_CPPTL
-  //      EnumMemberNames enumMemberNames() const;
-  //      EnumValues enumValues() const;
+  //	  EnumMemberNames enumMemberNames() const;
+  //	  EnumValues enumValues() const;
   //# endif
 
   /// \deprecated Always pass len.
@@ -604,12 +604,12 @@ private:
   Value& resolveReference(const char* key, const char* end);
 
   struct CommentInfo {
-    CommentInfo();
-    ~CommentInfo();
+	CommentInfo();
+	~CommentInfo();
 
-    void setComment(const char* text, size_t len);
+	void setComment(const char* text, size_t len);
 
-    char* comment_;
+	char* comment_;
   };
 
   // struct MemberNamesTransform
@@ -617,21 +617,21 @@ private:
   //   typedef const char *result_type;
   //   const char *operator()( const CZString &name ) const
   //   {
-  //      return name.c_str();
+  //	  return name.c_str();
   //   }
   //};
 
   union ValueHolder {
-    LargestInt int_;
-    LargestUInt uint_;
-    double real_;
-    bool bool_;
-    char* string_;  // actually ptr to unsigned, followed by str, unless !allocated_
-    ObjectValues* map_;
+	LargestInt int_;
+	LargestUInt uint_;
+	double real_;
+	bool bool_;
+	char* string_;  // actually ptr to unsigned, followed by str, unless !allocated_
+	ObjectValues* map_;
   } value_;
   ValueType type_ : 8;
   unsigned int allocated_ : 1; // Notes: if declared as bool, bitfield is useless.
-                               // If not allocated_, string_ must be null-terminated.
+							   // If not allocated_, string_ must be null-terminated.
   CommentInfo* comments_;
 
   // [start, limit) byte offsets in the source JSON text from which this Value
@@ -654,9 +654,9 @@ public:
 
 private:
   enum Kind {
-    kindNone = 0,
-    kindIndex,
-    kindKey
+	kindNone = 0,
+	kindIndex,
+	kindKey
   };
   JSONCPP_STRING key_;
   ArrayIndex index_;
@@ -677,11 +677,11 @@ private:
 class JSON_API Path {
 public:
   Path(const JSONCPP_STRING& path,
-       const PathArgument& a1 = PathArgument(),
-       const PathArgument& a2 = PathArgument(),
-       const PathArgument& a3 = PathArgument(),
-       const PathArgument& a4 = PathArgument(),
-       const PathArgument& a5 = PathArgument());
+	   const PathArgument& a1 = PathArgument(),
+	   const PathArgument& a2 = PathArgument(),
+	   const PathArgument& a3 = PathArgument(),
+	   const PathArgument& a4 = PathArgument(),
+	   const PathArgument& a5 = PathArgument());
 
   const Value& resolve(const Value& root) const;
   Value resolve(const Value& root, const Value& defaultValue) const;
@@ -695,9 +695,9 @@ private:
 
   void makePath(const JSONCPP_STRING& path, const InArgs& in);
   void addPathInArg(const JSONCPP_STRING& path,
-                    const InArgs& in,
-                    InArgs::const_iterator& itInArg,
-                    PathArgument::Kind kind);
+					const InArgs& in,
+					InArgs::const_iterator& itInArg,
+					PathArgument::Kind kind);
   void invalidPath(const JSONCPP_STRING& path, int location);
 
   Args args_;
@@ -718,7 +718,7 @@ public:
   bool operator!=(const SelfType& other) const { return !isEqual(other); }
 
   difference_type operator-(const SelfType& other) const {
-    return other.computeDistance(*this);
+	return other.computeDistance(*this);
   }
 
   /// Return either the index or the member name of the referenced value as a
@@ -793,25 +793,25 @@ public:
   SelfType& operator=(const ValueIteratorBase& other);
 
   SelfType operator++(int) {
-    SelfType temp(*this);
-    ++*this;
-    return temp;
+	SelfType temp(*this);
+	++*this;
+	return temp;
   }
 
   SelfType operator--(int) {
-    SelfType temp(*this);
-    --*this;
-    return temp;
+	SelfType temp(*this);
+	--*this;
+	return temp;
   }
 
   SelfType& operator--() {
-    decrement();
-    return *this;
+	decrement();
+	return *this;
   }
 
   SelfType& operator++() {
-    increment();
-    return *this;
+	increment();
+	return *this;
   }
 
   reference operator*() const { return deref(); }
@@ -844,25 +844,25 @@ public:
   SelfType& operator=(const SelfType& other);
 
   SelfType operator++(int) {
-    SelfType temp(*this);
-    ++*this;
-    return temp;
+	SelfType temp(*this);
+	++*this;
+	return temp;
   }
 
   SelfType operator--(int) {
-    SelfType temp(*this);
-    --*this;
-    return temp;
+	SelfType temp(*this);
+	--*this;
+	return temp;
   }
 
   SelfType& operator--() {
-    decrement();
-    return *this;
+	decrement();
+	return *this;
   }
 
   SelfType& operator++() {
-    increment();
-    return *this;
+	increment();
+	return *this;
   }
 
   reference operator*() const { return deref(); }

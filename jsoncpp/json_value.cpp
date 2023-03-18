@@ -90,24 +90,24 @@ static inline bool InRange(double d, T min, U max) {
 
 /** Duplicates the specified string value.
  * @param value Pointer to the string to duplicate. Must be zero-terminated if
- *              length is "unknown".
+ *			  length is "unknown".
  * @param length Length of the value. if equals to unknown, then it will be
- *               computed using strlen(value).
+ *			   computed using strlen(value).
  * @return Pointer on the duplicate instance of string.
  */
 static inline char* duplicateStringValue(const char* value,
-                                         size_t length)
+										 size_t length)
 {
   // Avoid an integer overflow in the call to malloc below by limiting length
   // to a sane value.
   if (length >= static_cast<size_t>(Value::maxInt))
-    length = Value::maxInt - 1;
+	length = Value::maxInt - 1;
 
   char* newString = static_cast<char*>(malloc(length + 1));
   if (newString == NULL) {
-    throwRuntimeError(
-        "in Json::Value::duplicateStringValue(): "
-        "Failed to allocate string value buffer");
+	throwRuntimeError(
+		"in Json::Value::duplicateStringValue(): "
+		"Failed to allocate string value buffer");
   }
   memcpy(newString, value, length);
   newString[length] = 0;
@@ -117,20 +117,20 @@ static inline char* duplicateStringValue(const char* value,
 /* Record the length as a prefix.
  */
 static inline char* duplicateAndPrefixStringValue(
-    const char* value,
-    unsigned int length)
+	const char* value,
+	unsigned int length)
 {
   // Avoid an integer overflow in the call to malloc below by limiting length
   // to a sane value.
   JSON_ASSERT_MESSAGE(length <= static_cast<unsigned>(Value::maxInt) - sizeof(unsigned) - 1U,
-                      "in Json::Value::duplicateAndPrefixStringValue(): "
-                      "length too big for prefixing");
+					  "in Json::Value::duplicateAndPrefixStringValue(): "
+					  "length too big for prefixing");
   unsigned actualLength = length + static_cast<unsigned>(sizeof(unsigned)) + 1U;
   char* newString = static_cast<char*>(malloc(actualLength));
   if (newString == 0) {
-    throwRuntimeError(
-        "in Json::Value::duplicateAndPrefixStringValue(): "
-        "Failed to allocate string value buffer");
+	throwRuntimeError(
+		"in Json::Value::duplicateAndPrefixStringValue(): "
+		"Failed to allocate string value buffer");
   }
   *reinterpret_cast<unsigned*>(newString) = length;
   memcpy(newString + sizeof(unsigned), value, length);
@@ -138,15 +138,15 @@ static inline char* duplicateAndPrefixStringValue(
   return newString;
 }
 inline static void decodePrefixedString(
-    bool isPrefixed, char const* prefixed,
-    unsigned* length, char const** value)
+	bool isPrefixed, char const* prefixed,
+	unsigned* length, char const** value)
 {
   if (!isPrefixed) {
-    *length = static_cast<unsigned>(strlen(prefixed));
-    *value = prefixed;
+	*length = static_cast<unsigned>(strlen(prefixed));
+	*value = prefixed;
   } else {
-    *length = *reinterpret_cast<unsigned const*>(prefixed);
-    *value = prefixed + sizeof(unsigned);
+	*length = *reinterpret_cast<unsigned const*>(prefixed);
+	*value = prefixed + sizeof(unsigned);
   }
 }
 /** Free the string duplicated by duplicateStringValue()/duplicateAndPrefixStringValue().
@@ -228,18 +228,18 @@ Value::CommentInfo::CommentInfo() : comment_(0)
 
 Value::CommentInfo::~CommentInfo() {
   if (comment_)
-    releaseStringValue(comment_, 0u);
+	releaseStringValue(comment_, 0u);
 }
 
 void Value::CommentInfo::setComment(const char* text, size_t len) {
   if (comment_) {
-    releaseStringValue(comment_, 0u);
-    comment_ = 0;
+	releaseStringValue(comment_, 0u);
+	comment_ = 0;
   }
   JSON_ASSERT(text != 0);
   JSON_ASSERT_MESSAGE(
-      text[0] == '\0' || text[0] == '/',
-      "in Json::Value::setComment(): Comments must start with /");
+	  text[0] == '\0' || text[0] == '/',
+	  "in Json::Value::setComment(): Comments must start with /");
   // It seems that /**/ style comments are acceptable as well.
   comment_ = duplicateStringValue(text, len);
 }
@@ -258,7 +258,7 @@ void Value::CommentInfo::setComment(const char* text, size_t len) {
 Value::CZString::CZString(ArrayIndex aindex) : cstr_(0), index_(aindex) {}
 
 Value::CZString::CZString(char const* str, unsigned ulength, DuplicationPolicy allocate)
-    : cstr_(str) {
+	: cstr_(str) {
   // allocate != duplicate
   storage_.policy_ = allocate & 0x3;
   storage_.length_ = ulength & 0x3FFFFFFF;
@@ -269,9 +269,9 @@ Value::CZString::CZString(const CZString& other) {
 				 ? duplicateStringValue(other.cstr_, other.storage_.length_)
 				 : other.cstr_);
   storage_.policy_ = static_cast<unsigned>(other.cstr_
-                 ? (static_cast<DuplicationPolicy>(other.storage_.policy_) == noDuplication
-                     ? noDuplication : duplicate)
-                 : static_cast<DuplicationPolicy>(other.storage_.policy_)) & 3U;
+				 ? (static_cast<DuplicationPolicy>(other.storage_.policy_) == noDuplication
+					 ? noDuplication : duplicate)
+				 : static_cast<DuplicationPolicy>(other.storage_.policy_)) & 3U;
   storage_.length_ = other.storage_.length_;
 }
 
@@ -358,27 +358,27 @@ Value::Value(ValueType vtype) {
   initBasic(vtype);
   switch (vtype) {
   case nullValue:
-    break;
+	break;
   case intValue:
   case uintValue:
-    value_.int_ = 0;
-    break;
+	value_.int_ = 0;
+	break;
   case realValue:
-    value_.real_ = 0.0;
-    break;
+	value_.real_ = 0.0;
+	break;
   case stringValue:
-    // allocated_ == false, so this is safe.
-    value_.string_ = const_cast<char*>(static_cast<char const*>(emptyString));
-    break;
+	// allocated_ == false, so this is safe.
+	value_.string_ = const_cast<char*>(static_cast<char const*>(emptyString));
+	break;
   case arrayValue:
   case objectValue:
-    value_.map_ = new ObjectValues();
-    break;
+	value_.map_ = new ObjectValues();
+	break;
   case booleanValue:
-    value_.bool_ = false;
-    break;
+	value_.bool_ = false;
+	break;
   default:
-    JSON_ASSERT_UNREACHABLE;
+	JSON_ASSERT_UNREACHABLE;
   }
 }
 
@@ -416,13 +416,13 @@ Value::Value(const char* value) {
 Value::Value(const char* beginValue, const char* endValue) {
   initBasic(stringValue, true);
   value_.string_ =
-      duplicateAndPrefixStringValue(beginValue, static_cast<unsigned>(endValue - beginValue));
+	  duplicateAndPrefixStringValue(beginValue, static_cast<unsigned>(endValue - beginValue));
 }
 
 Value::Value(const JSONCPP_STRING& value) {
   initBasic(stringValue, true);
   value_.string_ =
-      duplicateAndPrefixStringValue(value.data(), static_cast<unsigned>(value.length()));
+	  duplicateAndPrefixStringValue(value.data(), static_cast<unsigned>(value.length()));
 }
 
 Value::Value(const StaticString& value) {
@@ -443,9 +443,9 @@ Value::Value(bool value) {
 }
 
 Value::Value(Value const& other)
-    : type_(other.type_), allocated_(false)
-      ,
-      comments_(0), start_(other.start_), limit_(other.limit_)
+	: type_(other.type_), allocated_(false)
+	  ,
+	  comments_(0), start_(other.start_), limit_(other.limit_)
 {
   switch (type_) {
   case nullValue:
@@ -453,36 +453,36 @@ Value::Value(Value const& other)
   case uintValue:
   case realValue:
   case booleanValue:
-    value_ = other.value_;
-    break;
+	value_ = other.value_;
+	break;
   case stringValue:
-    if (other.value_.string_ && other.allocated_) {
-      unsigned len;
-      char const* str;
-      decodePrefixedString(other.allocated_, other.value_.string_,
-          &len, &str);
-      value_.string_ = duplicateAndPrefixStringValue(str, len);
-      allocated_ = true;
-    } else {
-      value_.string_ = other.value_.string_;
-      allocated_ = false;
-    }
-    break;
+	if (other.value_.string_ && other.allocated_) {
+	  unsigned len;
+	  char const* str;
+	  decodePrefixedString(other.allocated_, other.value_.string_,
+		  &len, &str);
+	  value_.string_ = duplicateAndPrefixStringValue(str, len);
+	  allocated_ = true;
+	} else {
+	  value_.string_ = other.value_.string_;
+	  allocated_ = false;
+	}
+	break;
   case arrayValue:
   case objectValue:
-    value_.map_ = new ObjectValues(*other.value_.map_);
-    break;
+	value_.map_ = new ObjectValues(*other.value_.map_);
+	break;
   default:
-    JSON_ASSERT_UNREACHABLE;
+	JSON_ASSERT_UNREACHABLE;
   }
   if (other.comments_) {
-    comments_ = new CommentInfo[numberOfCommentPlacement];
-    for (int comment = 0; comment < numberOfCommentPlacement; ++comment) {
-      const CommentInfo& otherComment = other.comments_[comment];
-      if (otherComment.comment_)
-        comments_[comment].setComment(
-            otherComment.comment_, strlen(otherComment.comment_));
-    }
+	comments_ = new CommentInfo[numberOfCommentPlacement];
+	for (int comment = 0; comment < numberOfCommentPlacement; ++comment) {
+	  const CommentInfo& otherComment = other.comments_[comment];
+	  if (otherComment.comment_)
+		comments_[comment].setComment(
+			otherComment.comment_, strlen(otherComment.comment_));
+	}
   }
 }
 
@@ -501,17 +501,17 @@ Value::~Value() {
   case uintValue:
   case realValue:
   case booleanValue:
-    break;
+	break;
   case stringValue:
-    if (allocated_)
-      releasePrefixedStringValue(value_.string_);
-    break;
+	if (allocated_)
+	  releasePrefixedStringValue(value_.string_);
+	break;
   case arrayValue:
   case objectValue:
-    delete value_.map_;
-    break;
+	delete value_.map_;
+	break;
   default:
-    JSON_ASSERT_UNREACHABLE;
+	JSON_ASSERT_UNREACHABLE;
   }
 
   delete[] comments_;
@@ -558,55 +558,55 @@ ValueType Value::type() const { return type_; }
 
 int Value::compare(const Value& other) const {
   if (*this < other)
-    return -1;
+	return -1;
   if (*this > other)
-    return 1;
+	return 1;
   return 0;
 }
 
 bool Value::operator<(const Value& other) const {
   int typeDelta = type_ - other.type_;
   if (typeDelta)
-    return typeDelta < 0 ? true : false;
+	return typeDelta < 0 ? true : false;
   switch (type_) {
   case nullValue:
-    return false;
+	return false;
   case intValue:
-    return value_.int_ < other.value_.int_;
+	return value_.int_ < other.value_.int_;
   case uintValue:
-    return value_.uint_ < other.value_.uint_;
+	return value_.uint_ < other.value_.uint_;
   case realValue:
-    return value_.real_ < other.value_.real_;
+	return value_.real_ < other.value_.real_;
   case booleanValue:
-    return value_.bool_ < other.value_.bool_;
+	return value_.bool_ < other.value_.bool_;
   case stringValue:
   {
-    if ((value_.string_ == 0) || (other.value_.string_ == 0)) {
-      if (other.value_.string_) return true;
-      else return false;
-    }
-    unsigned this_len;
-    unsigned other_len;
-    char const* this_str;
-    char const* other_str;
-    decodePrefixedString(this->allocated_, this->value_.string_, &this_len, &this_str);
-    decodePrefixedString(other.allocated_, other.value_.string_, &other_len, &other_str);
-    unsigned min_len = std::min<unsigned>(this_len, other_len);
-    JSON_ASSERT(this_str && other_str);
-    int comp = memcmp(this_str, other_str, min_len);
-    if (comp < 0) return true;
-    if (comp > 0) return false;
-    return (this_len < other_len);
+	if ((value_.string_ == 0) || (other.value_.string_ == 0)) {
+	  if (other.value_.string_) return true;
+	  else return false;
+	}
+	unsigned this_len;
+	unsigned other_len;
+	char const* this_str;
+	char const* other_str;
+	decodePrefixedString(this->allocated_, this->value_.string_, &this_len, &this_str);
+	decodePrefixedString(other.allocated_, other.value_.string_, &other_len, &other_str);
+	unsigned min_len = std::min<unsigned>(this_len, other_len);
+	JSON_ASSERT(this_str && other_str);
+	int comp = memcmp(this_str, other_str, min_len);
+	if (comp < 0) return true;
+	if (comp > 0) return false;
+	return (this_len < other_len);
   }
   case arrayValue:
   case objectValue: {
-    int delta = int(value_.map_->size() - other.value_.map_->size());
-    if (delta)
-      return delta < 0;
-    return (*value_.map_) < (*other.value_.map_);
+	int delta = int(value_.map_->size() - other.value_.map_->size());
+	if (delta)
+	  return delta < 0;
+	return (*value_.map_) < (*other.value_.map_);
   }
   default:
-    JSON_ASSERT_UNREACHABLE;
+	JSON_ASSERT_UNREACHABLE;
   }
   return false; // unreachable
 }
@@ -624,40 +624,40 @@ bool Value::operator==(const Value& other) const {
   // Beats me, but a temp solves the problem.
   int temp = other.type_;
   if (type_ != temp)
-    return false;
+	return false;
   switch (type_) {
   case nullValue:
-    return true;
+	return true;
   case intValue:
-    return value_.int_ == other.value_.int_;
+	return value_.int_ == other.value_.int_;
   case uintValue:
-    return value_.uint_ == other.value_.uint_;
+	return value_.uint_ == other.value_.uint_;
   case realValue:
-    return value_.real_ == other.value_.real_;
+	return value_.real_ == other.value_.real_;
   case booleanValue:
-    return value_.bool_ == other.value_.bool_;
+	return value_.bool_ == other.value_.bool_;
   case stringValue:
   {
-    if ((value_.string_ == 0) || (other.value_.string_ == 0)) {
-      return (value_.string_ == other.value_.string_);
-    }
-    unsigned this_len;
-    unsigned other_len;
-    char const* this_str;
-    char const* other_str;
-    decodePrefixedString(this->allocated_, this->value_.string_, &this_len, &this_str);
-    decodePrefixedString(other.allocated_, other.value_.string_, &other_len, &other_str);
-    if (this_len != other_len) return false;
-    JSON_ASSERT(this_str && other_str);
-    int comp = memcmp(this_str, other_str, this_len);
-    return comp == 0;
+	if ((value_.string_ == 0) || (other.value_.string_ == 0)) {
+	  return (value_.string_ == other.value_.string_);
+	}
+	unsigned this_len;
+	unsigned other_len;
+	char const* this_str;
+	char const* other_str;
+	decodePrefixedString(this->allocated_, this->value_.string_, &this_len, &this_str);
+	decodePrefixedString(other.allocated_, other.value_.string_, &other_len, &other_str);
+	if (this_len != other_len) return false;
+	JSON_ASSERT(this_str && other_str);
+	int comp = memcmp(this_str, other_str, this_len);
+	return comp == 0;
   }
   case arrayValue:
   case objectValue:
-    return value_.map_->size() == other.value_.map_->size() &&
-           (*value_.map_) == (*other.value_.map_);
+	return value_.map_->size() == other.value_.map_->size() &&
+		   (*value_.map_) == (*other.value_.map_);
   default:
-    JSON_ASSERT_UNREACHABLE;
+	JSON_ASSERT_UNREACHABLE;
   }
   return false; // unreachable
 }
@@ -666,7 +666,7 @@ bool Value::operator!=(const Value& other) const { return !(*this == other); }
 
 const char* Value::asCString() const {
   JSON_ASSERT_MESSAGE(type_ == stringValue,
-                      "in Json::Value::asCString(): requires stringValue");
+					  "in Json::Value::asCString(): requires stringValue");
   if (value_.string_ == 0) return 0;
   unsigned this_len;
   char const* this_str;
@@ -677,7 +677,7 @@ const char* Value::asCString() const {
 #if JSONCPP_USING_SECURE_MEMORY
 unsigned Value::getCStringLength() const {
   JSON_ASSERT_MESSAGE(type_ == stringValue,
-	                  "in Json::Value::asCString(): requires stringValue");
+					  "in Json::Value::asCString(): requires stringValue");
   if (value_.string_ == 0) return 0;
   unsigned this_len;
   char const* this_str;
@@ -698,25 +698,25 @@ bool Value::getString(char const** str, char const** cend) const {
 JSONCPP_STRING Value::asString() const {
   switch (type_) {
   case nullValue:
-    return "";
+	return "";
   case stringValue:
   {
-    if (value_.string_ == 0) return "";
-    unsigned this_len;
-    char const* this_str;
-    decodePrefixedString(this->allocated_, this->value_.string_, &this_len, &this_str);
-    return JSONCPP_STRING(this_str, this_len);
+	if (value_.string_ == 0) return "";
+	unsigned this_len;
+	char const* this_str;
+	decodePrefixedString(this->allocated_, this->value_.string_, &this_len, &this_str);
+	return JSONCPP_STRING(this_str, this_len);
   }
   case booleanValue:
-    return value_.bool_ ? "true" : "false";
+	return value_.bool_ ? "true" : "false";
   case intValue:
-    return valueToString(value_.int_);
+	return valueToString(value_.int_);
   case uintValue:
-    return valueToString(value_.uint_);
+	return valueToString(value_.uint_);
   case realValue:
-    return valueToString(value_.real_);
+	return valueToString(value_.real_);
   default:
-    JSON_FAIL_MESSAGE("Type is not convertible to string");
+	JSON_FAIL_MESSAGE("Type is not convertible to string");
   }
 }
 
@@ -725,7 +725,7 @@ CppTL::ConstString Value::asConstString() const {
   unsigned len;
   char const* str;
   decodePrefixedString(allocated_, value_.string_,
-      &len, &str);
+	  &len, &str);
   return CppTL::ConstString(str, len);
 }
 #endif
@@ -733,21 +733,21 @@ CppTL::ConstString Value::asConstString() const {
 Value::Int Value::asInt() const {
   switch (type_) {
   case intValue:
-    JSON_ASSERT_MESSAGE(isInt(), "LargestInt out of Int range");
-    return Int(value_.int_);
+	JSON_ASSERT_MESSAGE(isInt(), "LargestInt out of Int range");
+	return Int(value_.int_);
   case uintValue:
-    JSON_ASSERT_MESSAGE(isInt(), "LargestUInt out of Int range");
-    return Int(value_.uint_);
+	JSON_ASSERT_MESSAGE(isInt(), "LargestUInt out of Int range");
+	return Int(value_.uint_);
   case realValue:
-    JSON_ASSERT_MESSAGE(InRange(value_.real_, minInt, maxInt),
-                        "double out of Int range");
-    return Int(value_.real_);
+	JSON_ASSERT_MESSAGE(InRange(value_.real_, minInt, maxInt),
+						"double out of Int range");
+	return Int(value_.real_);
   case nullValue:
-    return 0;
+	return 0;
   case booleanValue:
-    return value_.bool_ ? 1 : 0;
+	return value_.bool_ ? 1 : 0;
   default:
-    break;
+	break;
   }
   JSON_FAIL_MESSAGE("Value is not convertible to Int.");
 }
@@ -755,21 +755,21 @@ Value::Int Value::asInt() const {
 Value::UInt Value::asUInt() const {
   switch (type_) {
   case intValue:
-    JSON_ASSERT_MESSAGE(isUInt(), "LargestInt out of UInt range");
-    return UInt(value_.int_);
+	JSON_ASSERT_MESSAGE(isUInt(), "LargestInt out of UInt range");
+	return UInt(value_.int_);
   case uintValue:
-    JSON_ASSERT_MESSAGE(isUInt(), "LargestUInt out of UInt range");
-    return UInt(value_.uint_);
+	JSON_ASSERT_MESSAGE(isUInt(), "LargestUInt out of UInt range");
+	return UInt(value_.uint_);
   case realValue:
-    JSON_ASSERT_MESSAGE(InRange(value_.real_, 0, maxUInt),
-                        "double out of UInt range");
-    return UInt(value_.real_);
+	JSON_ASSERT_MESSAGE(InRange(value_.real_, 0, maxUInt),
+						"double out of UInt range");
+	return UInt(value_.real_);
   case nullValue:
-    return 0;
+	return 0;
   case booleanValue:
-    return value_.bool_ ? 1 : 0;
+	return value_.bool_ ? 1 : 0;
   default:
-    break;
+	break;
   }
   JSON_FAIL_MESSAGE("Value is not convertible to UInt.");
 }
@@ -779,20 +779,20 @@ Value::UInt Value::asUInt() const {
 Value::Int64 Value::asInt64() const {
   switch (type_) {
   case intValue:
-    return Int64(value_.int_);
+	return Int64(value_.int_);
   case uintValue:
-    JSON_ASSERT_MESSAGE(isInt64(), "LargestUInt out of Int64 range");
-    return Int64(value_.uint_);
+	JSON_ASSERT_MESSAGE(isInt64(), "LargestUInt out of Int64 range");
+	return Int64(value_.uint_);
   case realValue:
-    JSON_ASSERT_MESSAGE(InRange(value_.real_, minInt64, maxInt64),
-                        "double out of Int64 range");
-    return Int64(value_.real_);
+	JSON_ASSERT_MESSAGE(InRange(value_.real_, minInt64, maxInt64),
+						"double out of Int64 range");
+	return Int64(value_.real_);
   case nullValue:
-    return 0;
+	return 0;
   case booleanValue:
-    return value_.bool_ ? 1 : 0;
+	return value_.bool_ ? 1 : 0;
   default:
-    break;
+	break;
   }
   JSON_FAIL_MESSAGE("Value is not convertible to Int64.");
 }
@@ -800,20 +800,20 @@ Value::Int64 Value::asInt64() const {
 Value::UInt64 Value::asUInt64() const {
   switch (type_) {
   case intValue:
-    JSON_ASSERT_MESSAGE(isUInt64(), "LargestInt out of UInt64 range");
-    return UInt64(value_.int_);
+	JSON_ASSERT_MESSAGE(isUInt64(), "LargestInt out of UInt64 range");
+	return UInt64(value_.int_);
   case uintValue:
-    return UInt64(value_.uint_);
+	return UInt64(value_.uint_);
   case realValue:
-    JSON_ASSERT_MESSAGE(InRange(value_.real_, 0, maxUInt64),
-                        "double out of UInt64 range");
-    return UInt64(value_.real_);
+	JSON_ASSERT_MESSAGE(InRange(value_.real_, 0, maxUInt64),
+						"double out of UInt64 range");
+	return UInt64(value_.real_);
   case nullValue:
-    return 0;
+	return 0;
   case booleanValue:
-    return value_.bool_ ? 1 : 0;
+	return value_.bool_ ? 1 : 0;
   default:
-    break;
+	break;
   }
   JSON_FAIL_MESSAGE("Value is not convertible to UInt64.");
 }
@@ -838,21 +838,21 @@ LargestUInt Value::asLargestUInt() const {
 double Value::asDouble() const {
   switch (type_) {
   case intValue:
-    return static_cast<double>(value_.int_);
+	return static_cast<double>(value_.int_);
   case uintValue:
 #if !defined(JSON_USE_INT64_DOUBLE_CONVERSION)
-    return static_cast<double>(value_.uint_);
+	return static_cast<double>(value_.uint_);
 #else  // if !defined(JSON_USE_INT64_DOUBLE_CONVERSION)
-    return integerToDouble(value_.uint_);
+	return integerToDouble(value_.uint_);
 #endif // if !defined(JSON_USE_INT64_DOUBLE_CONVERSION)
   case realValue:
-    return value_.real_;
+	return value_.real_;
   case nullValue:
-    return 0.0;
+	return 0.0;
   case booleanValue:
-    return value_.bool_ ? 1.0 : 0.0;
+	return value_.bool_ ? 1.0 : 0.0;
   default:
-    break;
+	break;
   }
   JSON_FAIL_MESSAGE("Value is not convertible to double.");
 }
@@ -860,22 +860,22 @@ double Value::asDouble() const {
 float Value::asFloat() const {
   switch (type_) {
   case intValue:
-    return static_cast<float>(value_.int_);
+	return static_cast<float>(value_.int_);
   case uintValue:
 #if !defined(JSON_USE_INT64_DOUBLE_CONVERSION)
-    return static_cast<float>(value_.uint_);
+	return static_cast<float>(value_.uint_);
 #else  // if !defined(JSON_USE_INT64_DOUBLE_CONVERSION)
-    // This can fail (silently?) if the value is bigger than MAX_FLOAT.
-    return static_cast<float>(integerToDouble(value_.uint_));
+	// This can fail (silently?) if the value is bigger than MAX_FLOAT.
+	return static_cast<float>(integerToDouble(value_.uint_));
 #endif // if !defined(JSON_USE_INT64_DOUBLE_CONVERSION)
   case realValue:
-    return static_cast<float>(value_.real_);
+	return static_cast<float>(value_.real_);
   case nullValue:
-    return 0.0;
+	return 0.0;
   case booleanValue:
-    return value_.bool_ ? 1.0f : 0.0f;
+	return value_.bool_ ? 1.0f : 0.0f;
   default:
-    break;
+	break;
   }
   JSON_FAIL_MESSAGE("Value is not convertible to float.");
 }
@@ -883,18 +883,18 @@ float Value::asFloat() const {
 bool Value::asBool() const {
   switch (type_) {
   case booleanValue:
-    return value_.bool_;
+	return value_.bool_;
   case nullValue:
-    return false;
+	return false;
   case intValue:
-    return value_.int_ ? true : false;
+	return value_.int_ ? true : false;
   case uintValue:
-    return value_.uint_ ? true : false;
+	return value_.uint_ ? true : false;
   case realValue:
-    // This is kind of strange. Not recommended.
-    return (value_.real_ != 0.0) ? true : false;
+	// This is kind of strange. Not recommended.
+	return (value_.real_ != 0.0) ? true : false;
   default:
-    break;
+	break;
   }
   JSON_FAIL_MESSAGE("Value is not convertible to bool.");
 }
@@ -902,31 +902,31 @@ bool Value::asBool() const {
 bool Value::isConvertibleTo(ValueType other) const {
   switch (other) {
   case nullValue:
-    return (isNumeric() && asDouble() == 0.0) ||
-           (type_ == booleanValue && value_.bool_ == false) ||
-           (type_ == stringValue && asString().empty()) ||
-           (type_ == arrayValue && value_.map_->size() == 0) ||
-           (type_ == objectValue && value_.map_->size() == 0) ||
-           type_ == nullValue;
+	return (isNumeric() && asDouble() == 0.0) ||
+		   (type_ == booleanValue && value_.bool_ == false) ||
+		   (type_ == stringValue && asString().empty()) ||
+		   (type_ == arrayValue && value_.map_->size() == 0) ||
+		   (type_ == objectValue && value_.map_->size() == 0) ||
+		   type_ == nullValue;
   case intValue:
-    return isInt() ||
-           (type_ == realValue && InRange(value_.real_, minInt, maxInt)) ||
-           type_ == booleanValue || type_ == nullValue;
+	return isInt() ||
+		   (type_ == realValue && InRange(value_.real_, minInt, maxInt)) ||
+		   type_ == booleanValue || type_ == nullValue;
   case uintValue:
-    return isUInt() ||
-           (type_ == realValue && InRange(value_.real_, 0, maxUInt)) ||
-           type_ == booleanValue || type_ == nullValue;
+	return isUInt() ||
+		   (type_ == realValue && InRange(value_.real_, 0, maxUInt)) ||
+		   type_ == booleanValue || type_ == nullValue;
   case realValue:
-    return isNumeric() || type_ == booleanValue || type_ == nullValue;
+	return isNumeric() || type_ == booleanValue || type_ == nullValue;
   case booleanValue:
-    return isNumeric() || type_ == booleanValue || type_ == nullValue;
+	return isNumeric() || type_ == booleanValue || type_ == nullValue;
   case stringValue:
-    return isNumeric() || type_ == booleanValue || type_ == stringValue ||
-           type_ == nullValue;
+	return isNumeric() || type_ == booleanValue || type_ == stringValue ||
+		   type_ == nullValue;
   case arrayValue:
-    return type_ == arrayValue || type_ == nullValue;
+	return type_ == arrayValue || type_ == nullValue;
   case objectValue:
-    return type_ == objectValue || type_ == nullValue;
+	return type_ == objectValue || type_ == nullValue;
   }
   JSON_ASSERT_UNREACHABLE;
   return false;
@@ -941,16 +941,16 @@ ArrayIndex Value::size() const {
   case realValue:
   case booleanValue:
   case stringValue:
-    return 0;
+	return 0;
   case arrayValue: // size of the array is highest index + 1
-    if (!value_.map_->empty()) {
-      ObjectValues::const_iterator itLast = value_.map_->end();
-      --itLast;
-      return (*itLast).first.index() + 1;
-    }
-    return 0;
+	if (!value_.map_->empty()) {
+	  ObjectValues::const_iterator itLast = value_.map_->end();
+	  --itLast;
+	  return (*itLast).first.index() + 1;
+	}
+	return 0;
   case objectValue:
-    return ArrayIndex(value_.map_->size());
+	return ArrayIndex(value_.map_->size());
   }
   JSON_ASSERT_UNREACHABLE;
   return 0; // unreachable;
@@ -958,57 +958,57 @@ ArrayIndex Value::size() const {
 
 bool Value::empty() const {
   if (isNull() || isArray() || isObject())
-    return size() == 0u;
+	return size() == 0u;
   else
-    return false;
+	return false;
 }
 
 Value::operator bool() const { return ! isNull(); }
 
 void Value::clear() {
   JSON_ASSERT_MESSAGE(type_ == nullValue || type_ == arrayValue ||
-                          type_ == objectValue,
-                      "in Json::Value::clear(): requires complex value");
+						  type_ == objectValue,
+					  "in Json::Value::clear(): requires complex value");
   start_ = 0;
   limit_ = 0;
   switch (type_) {
   case arrayValue:
   case objectValue:
-    value_.map_->clear();
-    break;
+	value_.map_->clear();
+	break;
   default:
-    break;
+	break;
   }
 }
 
 void Value::resize(ArrayIndex newSize) {
   JSON_ASSERT_MESSAGE(type_ == nullValue || type_ == arrayValue,
-                      "in Json::Value::resize(): requires arrayValue");
+					  "in Json::Value::resize(): requires arrayValue");
   if (type_ == nullValue)
-    *this = Value(arrayValue);
+	*this = Value(arrayValue);
   ArrayIndex oldSize = size();
   if (newSize == 0)
-    clear();
+	clear();
   else if (newSize > oldSize)
-    (*this)[newSize - 1];
+	(*this)[newSize - 1];
   else {
-    for (ArrayIndex index = newSize; index < oldSize; ++index) {
-      value_.map_->erase(index);
-    }
-    JSON_ASSERT(size() == newSize);
+	for (ArrayIndex index = newSize; index < oldSize; ++index) {
+	  value_.map_->erase(index);
+	}
+	JSON_ASSERT(size() == newSize);
   }
 }
 
 Value& Value::operator[](ArrayIndex index) {
   JSON_ASSERT_MESSAGE(
-      type_ == nullValue || type_ == arrayValue,
-      "in Json::Value::operator[](ArrayIndex): requires arrayValue");
+	  type_ == nullValue || type_ == arrayValue,
+	  "in Json::Value::operator[](ArrayIndex): requires arrayValue");
   if (type_ == nullValue)
-    *this = Value(arrayValue);
+	*this = Value(arrayValue);
   CZString key(index);
   ObjectValues::iterator it = value_.map_->lower_bound(key);
   if (it != value_.map_->end() && (*it).first == key)
-    return (*it).second;
+	return (*it).second;
 
   ObjectValues::value_type defaultValue(key, nullSingleton());
   it = value_.map_->insert(it, defaultValue);
@@ -1017,28 +1017,28 @@ Value& Value::operator[](ArrayIndex index) {
 
 Value& Value::operator[](int index) {
   JSON_ASSERT_MESSAGE(
-      index >= 0,
-      "in Json::Value::operator[](int index): index cannot be negative");
+	  index >= 0,
+	  "in Json::Value::operator[](int index): index cannot be negative");
   return (*this)[ArrayIndex(index)];
 }
 
 const Value& Value::operator[](ArrayIndex index) const {
   JSON_ASSERT_MESSAGE(
-      type_ == nullValue || type_ == arrayValue,
-      "in Json::Value::operator[](ArrayIndex)const: requires arrayValue");
+	  type_ == nullValue || type_ == arrayValue,
+	  "in Json::Value::operator[](ArrayIndex)const: requires arrayValue");
   if (type_ == nullValue)
-    return nullSingleton();
+	return nullSingleton();
   CZString key(index);
   ObjectValues::const_iterator it = value_.map_->find(key);
   if (it == value_.map_->end())
-    return nullSingleton();
+	return nullSingleton();
   return (*it).second;
 }
 
 const Value& Value::operator[](int index) const {
   JSON_ASSERT_MESSAGE(
-      index >= 0,
-      "in Json::Value::operator[](int index) const: index cannot be negative");
+	  index >= 0,
+	  "in Json::Value::operator[](int index) const: index cannot be negative");
   return (*this)[ArrayIndex(index)];
 }
 
@@ -1055,15 +1055,15 @@ void Value::initBasic(ValueType vtype, bool allocated) {
 // @param key is null-terminated.
 Value& Value::resolveReference(const char* key) {
   JSON_ASSERT_MESSAGE(
-      type_ == nullValue || type_ == objectValue,
-      "in Json::Value::resolveReference(): requires objectValue");
+	  type_ == nullValue || type_ == objectValue,
+	  "in Json::Value::resolveReference(): requires objectValue");
   if (type_ == nullValue)
-    *this = Value(objectValue);
+	*this = Value(objectValue);
   CZString actualKey(
-      key, static_cast<unsigned>(strlen(key)), CZString::noDuplication); // NOTE!
+	  key, static_cast<unsigned>(strlen(key)), CZString::noDuplication); // NOTE!
   ObjectValues::iterator it = value_.map_->lower_bound(actualKey);
   if (it != value_.map_->end() && (*it).first == actualKey)
-    return (*it).second;
+	return (*it).second;
 
   ObjectValues::value_type defaultValue(actualKey, nullSingleton());
   it = value_.map_->insert(it, defaultValue);
@@ -1075,15 +1075,15 @@ Value& Value::resolveReference(const char* key) {
 Value& Value::resolveReference(char const* key, char const* cend)
 {
   JSON_ASSERT_MESSAGE(
-      type_ == nullValue || type_ == objectValue,
-      "in Json::Value::resolveReference(key, end): requires objectValue");
+	  type_ == nullValue || type_ == objectValue,
+	  "in Json::Value::resolveReference(key, end): requires objectValue");
   if (type_ == nullValue)
-    *this = Value(objectValue);
+	*this = Value(objectValue);
   CZString actualKey(
-      key, static_cast<unsigned>(cend-key), CZString::duplicateOnCopy);
+	  key, static_cast<unsigned>(cend-key), CZString::duplicateOnCopy);
   ObjectValues::iterator it = value_.map_->lower_bound(actualKey);
   if (it != value_.map_->end() && (*it).first == actualKey)
-    return (*it).second;
+	return (*it).second;
 
   ObjectValues::value_type defaultValue(actualKey, nullSingleton());
   it = value_.map_->insert(it, defaultValue);
@@ -1101,8 +1101,8 @@ bool Value::isValidIndex(ArrayIndex index) const { return index < size(); }
 Value const* Value::find(char const* key, char const* cend) const
 {
   JSON_ASSERT_MESSAGE(
-      type_ == nullValue || type_ == objectValue,
-      "in Json::Value::find(key, end, found): requires objectValue or nullValue");
+	  type_ == nullValue || type_ == objectValue,
+	  "in Json::Value::find(key, end, found): requires objectValue or nullValue");
   if (type_ == nullValue) return NULL;
   CZString actualKey(key, static_cast<unsigned>(cend-key), CZString::noDuplication);
   ObjectValues::const_iterator it = value_.map_->find(actualKey);
@@ -1170,12 +1170,12 @@ Value Value::get(JSONCPP_STRING const& key, Value const& defaultValue) const
 bool Value::removeMember(const char* key, const char* cend, Value* removed)
 {
   if (type_ != objectValue) {
-    return false;
+	return false;
   }
   CZString actualKey(key, static_cast<unsigned>(cend-key), CZString::noDuplication);
   ObjectValues::iterator it = value_.map_->find(actualKey);
   if (it == value_.map_->end())
-    return false;
+	return false;
   *removed = it->second;
   value_.map_->erase(it);
   return true;
@@ -1191,9 +1191,9 @@ bool Value::removeMember(JSONCPP_STRING const& key, Value* removed)
 void Value::removeMember(const char* key)
 {
   JSON_ASSERT_MESSAGE(type_ == nullValue || type_ == objectValue,
-                      "in Json::Value::removeMember(): requires objectValue");
+					  "in Json::Value::removeMember(): requires objectValue");
   if (type_ == nullValue)
-    return;
+	return;
 
   CZString actualKey(key, unsigned(strlen(key)), CZString::noDuplication);
   value_.map_->erase(actualKey);
@@ -1205,19 +1205,19 @@ void Value::removeMember(const JSONCPP_STRING& key)
 
 bool Value::removeIndex(ArrayIndex index, Value* removed) {
   if (type_ != arrayValue) {
-    return false;
+	return false;
   }
   CZString key(index);
   ObjectValues::iterator it = value_.map_->find(key);
   if (it == value_.map_->end()) {
-    return false;
+	return false;
   }
   *removed = it->second;
   ArrayIndex oldSize = size();
   // shift left all items left, into the place of the "removed"
   for (ArrayIndex i = index; i < (oldSize - 1); ++i){
-    CZString keey(i);
-    (*value_.map_)[keey] = (*this)[i + 1];
+	CZString keey(i);
+	(*value_.map_)[keey] = (*this)[i + 1];
   }
   // erase the last one ("leftover")
   CZString keyLast(oldSize - 1);
@@ -1228,7 +1228,7 @@ bool Value::removeIndex(ArrayIndex index, Value* removed) {
 
 #ifdef JSON_USE_CPPTL
 Value Value::get(const CppTL::ConstString& key,
-                 const Value& defaultValue) const {
+				 const Value& defaultValue) const {
   return get(key.c_str(), key.end_c_str(), defaultValue);
 }
 #endif
@@ -1255,17 +1255,17 @@ bool Value::isMember(const CppTL::ConstString& key) const {
 
 Value::Members Value::getMemberNames() const {
   JSON_ASSERT_MESSAGE(
-      type_ == nullValue || type_ == objectValue,
-      "in Json::Value::getMemberNames(), value must be objectValue");
+	  type_ == nullValue || type_ == objectValue,
+	  "in Json::Value::getMemberNames(), value must be objectValue");
   if (type_ == nullValue)
-    return Value::Members();
+	return Value::Members();
   Members members;
   members.reserve(value_.map_->size());
   ObjectValues::const_iterator it = value_.map_->begin();
   ObjectValues::const_iterator itEnd = value_.map_->end();
   for (; it != itEnd; ++it) {
-    members.push_back(JSONCPP_STRING((*it).first.data(),
-                                  (*it).first.length()));
+	members.push_back(JSONCPP_STRING((*it).first.data(),
+								  (*it).first.length()));
   }
   return members;
 }
@@ -1276,9 +1276,9 @@ Value::Members Value::getMemberNames() const {
 //{
 //   if ( type_ == objectValue )
 //   {
-//      return CppTL::Enum::any(  CppTL::Enum::transform(
-//         CppTL::Enum::keys( *(value_.map_), CppTL::Type<const CZString &>() ),
-//         MemberNamesTransform() ) );
+//	  return CppTL::Enum::any(  CppTL::Enum::transform(
+//		 CppTL::Enum::keys( *(value_.map_), CppTL::Type<const CZString &>() ),
+//		 MemberNamesTransform() ) );
 //   }
 //   return EnumMemberNames();
 //}
@@ -1288,8 +1288,8 @@ Value::Members Value::getMemberNames() const {
 // Value::enumValues() const
 //{
 //   if ( type_ == objectValue  ||  type_ == arrayValue )
-//      return CppTL::Enum::anyValues( *(value_.map_),
-//                                     CppTL::Type<const Value &>() );
+//	  return CppTL::Enum::anyValues( *(value_.map_),
+//									 CppTL::Type<const Value &>() );
 //   return EnumValues();
 //}
 //
@@ -1308,17 +1308,17 @@ bool Value::isInt() const {
   switch (type_) {
   case intValue:
 #if defined(JSON_HAS_INT64)
-    return value_.int_ >= minInt && value_.int_ <= maxInt;
+	return value_.int_ >= minInt && value_.int_ <= maxInt;
 #else
-    return true;
+	return true;
 #endif
   case uintValue:
-    return value_.uint_ <= UInt(maxInt);
+	return value_.uint_ <= UInt(maxInt);
   case realValue:
-    return value_.real_ >= minInt && value_.real_ <= maxInt &&
-           IsIntegral(value_.real_);
+	return value_.real_ >= minInt && value_.real_ <= maxInt &&
+		   IsIntegral(value_.real_);
   default:
-    break;
+	break;
   }
   return false;
 }
@@ -1327,21 +1327,21 @@ bool Value::isUInt() const {
   switch (type_) {
   case intValue:
 #if defined(JSON_HAS_INT64)
-    return value_.int_ >= 0 && LargestUInt(value_.int_) <= LargestUInt(maxUInt);
+	return value_.int_ >= 0 && LargestUInt(value_.int_) <= LargestUInt(maxUInt);
 #else
-    return value_.int_ >= 0;
+	return value_.int_ >= 0;
 #endif
   case uintValue:
 #if defined(JSON_HAS_INT64)
-    return value_.uint_ <= maxUInt;
+	return value_.uint_ <= maxUInt;
 #else
-    return true;
+	return true;
 #endif
   case realValue:
-    return value_.real_ >= 0 && value_.real_ <= maxUInt &&
-           IsIntegral(value_.real_);
+	return value_.real_ >= 0 && value_.real_ <= maxUInt &&
+		   IsIntegral(value_.real_);
   default:
-    break;
+	break;
   }
   return false;
 }
@@ -1350,17 +1350,17 @@ bool Value::isInt64() const {
 #if defined(JSON_HAS_INT64)
   switch (type_) {
   case intValue:
-    return true;
+	return true;
   case uintValue:
-    return value_.uint_ <= UInt64(maxInt64);
+	return value_.uint_ <= UInt64(maxInt64);
   case realValue:
-    // Note that maxInt64 (= 2^63 - 1) is not exactly representable as a
-    // double, so double(maxInt64) will be rounded up to 2^63. Therefore we
-    // require the value to be strictly less than the limit.
-    return value_.real_ >= double(minInt64) &&
-           value_.real_ < double(maxInt64) && IsIntegral(value_.real_);
+	// Note that maxInt64 (= 2^63 - 1) is not exactly representable as a
+	// double, so double(maxInt64) will be rounded up to 2^63. Therefore we
+	// require the value to be strictly less than the limit.
+	return value_.real_ >= double(minInt64) &&
+		   value_.real_ < double(maxInt64) && IsIntegral(value_.real_);
   default:
-    break;
+	break;
   }
 #endif // JSON_HAS_INT64
   return false;
@@ -1370,17 +1370,17 @@ bool Value::isUInt64() const {
 #if defined(JSON_HAS_INT64)
   switch (type_) {
   case intValue:
-    return value_.int_ >= 0;
+	return value_.int_ >= 0;
   case uintValue:
-    return true;
+	return true;
   case realValue:
-    // Note that maxUInt64 (= 2^64 - 1) is not exactly representable as a
-    // double, so double(maxUInt64) will be rounded up to 2^64. Therefore we
-    // require the value to be strictly less than the limit.
-    return value_.real_ >= 0 && value_.real_ < maxUInt64AsDouble &&
-           IsIntegral(value_.real_);
+	// Note that maxUInt64 (= 2^64 - 1) is not exactly representable as a
+	// double, so double(maxUInt64) will be rounded up to 2^64. Therefore we
+	// require the value to be strictly less than the limit.
+	return value_.real_ >= 0 && value_.real_ < maxUInt64AsDouble &&
+		   IsIntegral(value_.real_);
   default:
-    break;
+	break;
   }
 #endif // JSON_HAS_INT64
   return false;
@@ -1388,20 +1388,20 @@ bool Value::isUInt64() const {
 
 bool Value::isIntegral() const {
   switch (type_) {
-    case intValue:
-    case uintValue:
-      return true;
-    case realValue:
+	case intValue:
+	case uintValue:
+	  return true;
+	case realValue:
 #if defined(JSON_HAS_INT64)
-      // Note that maxUInt64 (= 2^64 - 1) is not exactly representable as a
-      // double, so double(maxUInt64) will be rounded up to 2^64. Therefore we
-      // require the value to be strictly less than the limit.
-      return value_.real_ >= double(minInt64) && value_.real_ < maxUInt64AsDouble && IsIntegral(value_.real_);
+	  // Note that maxUInt64 (= 2^64 - 1) is not exactly representable as a
+	  // double, so double(maxUInt64) will be rounded up to 2^64. Therefore we
+	  // require the value to be strictly less than the limit.
+	  return value_.real_ >= double(minInt64) && value_.real_ < maxUInt64AsDouble && IsIntegral(value_.real_);
 #else
-      return value_.real_ >= minInt && value_.real_ <= maxUInt && IsIntegral(value_.real_);
+	  return value_.real_ >= minInt && value_.real_ <= maxUInt && IsIntegral(value_.real_);
 #endif // JSON_HAS_INT64
-    default:
-      break;
+	default:
+	  break;
   }
   return false;
 }
@@ -1418,10 +1418,10 @@ bool Value::isObject() const { return type_ == objectValue; }
 
 void Value::setComment(const char* comment, size_t len, CommentPlacement placement) {
   if (!comments_)
-    comments_ = new CommentInfo[numberOfCommentPlacement];
+	comments_ = new CommentInfo[numberOfCommentPlacement];
   if ((len > 0) && (comment[len-1] == '\n')) {
-    // Always discard trailing newline, to aid indentation.
-    len -= 1;
+	// Always discard trailing newline, to aid indentation.
+	len -= 1;
   }
   comments_[placement].setComment(comment, len);
 }
@@ -1440,7 +1440,7 @@ bool Value::hasComment(CommentPlacement placement) const {
 
 JSONCPP_STRING Value::getComment(CommentPlacement placement) const {
   if (hasComment(placement))
-    return comments_[placement].comment_;
+	return comments_[placement].comment_;
   return "";
 }
 
@@ -1466,11 +1466,11 @@ Value::const_iterator Value::begin() const {
   switch (type_) {
   case arrayValue:
   case objectValue:
-    if (value_.map_)
-      return const_iterator(value_.map_->begin());
-    break;
+	if (value_.map_)
+	  return const_iterator(value_.map_->begin());
+	break;
   default:
-    break;
+	break;
   }
   return const_iterator();
 }
@@ -1479,11 +1479,11 @@ Value::const_iterator Value::end() const {
   switch (type_) {
   case arrayValue:
   case objectValue:
-    if (value_.map_)
-      return const_iterator(value_.map_->end());
-    break;
+	if (value_.map_)
+	  return const_iterator(value_.map_->end());
+	break;
   default:
-    break;
+	break;
   }
   return const_iterator();
 }
@@ -1492,11 +1492,11 @@ Value::iterator Value::begin() {
   switch (type_) {
   case arrayValue:
   case objectValue:
-    if (value_.map_)
-      return iterator(value_.map_->begin());
-    break;
+	if (value_.map_)
+	  return iterator(value_.map_->begin());
+	break;
   default:
-    break;
+	break;
   }
   return iterator();
 }
@@ -1505,11 +1505,11 @@ Value::iterator Value::end() {
   switch (type_) {
   case arrayValue:
   case objectValue:
-    if (value_.map_)
-      return iterator(value_.map_->end());
-    break;
+	if (value_.map_)
+	  return iterator(value_.map_->end());
+	break;
   default:
-    break;
+	break;
   }
   return iterator();
 }
@@ -1520,23 +1520,23 @@ Value::iterator Value::end() {
 PathArgument::PathArgument() : key_(), index_(), kind_(kindNone) {}
 
 PathArgument::PathArgument(ArrayIndex index)
-    : key_(), index_(index), kind_(kindIndex) {}
+	: key_(), index_(index), kind_(kindIndex) {}
 
 PathArgument::PathArgument(const char* key)
-    : key_(key), index_(), kind_(kindKey) {}
+	: key_(key), index_(), kind_(kindKey) {}
 
 PathArgument::PathArgument(const JSONCPP_STRING& key)
-    : key_(key.c_str()), index_(), kind_(kindKey) {}
+	: key_(key.c_str()), index_(), kind_(kindKey) {}
 
 // class Path
 // //////////////////////////////////////////////////////////////////
 
 Path::Path(const JSONCPP_STRING& path,
-           const PathArgument& a1,
-           const PathArgument& a2,
-           const PathArgument& a3,
-           const PathArgument& a4,
-           const PathArgument& a5) {
+		   const PathArgument& a1,
+		   const PathArgument& a2,
+		   const PathArgument& a3,
+		   const PathArgument& a4,
+		   const PathArgument& a5) {
   InArgs in;
   in.reserve(5);
   in.push_back(&a1);
@@ -1552,42 +1552,42 @@ void Path::makePath(const JSONCPP_STRING& path, const InArgs& in) {
   const char* end = current + path.length();
   InArgs::const_iterator itInArg = in.begin();
   while (current != end) {
-    if (*current == '[') {
-      ++current;
-      if (*current == '%')
-        addPathInArg(path, in, itInArg, PathArgument::kindIndex);
-      else {
-        ArrayIndex index = 0;
-        for (; current != end && *current >= '0' && *current <= '9'; ++current)
-          index = index * 10 + ArrayIndex(*current - '0');
-        args_.push_back(index);
-      }
-      if (current == end || *++current != ']')
-        invalidPath(path, int(current - path.c_str()));
-    } else if (*current == '%') {
-      addPathInArg(path, in, itInArg, PathArgument::kindKey);
-      ++current;
-    } else if (*current == '.' || *current == ']') {
-      ++current;
-    } else {
-      const char* beginName = current;
-      while (current != end && !strchr("[.", *current))
-        ++current;
-      args_.push_back(JSONCPP_STRING(beginName, current));
-    }
+	if (*current == '[') {
+	  ++current;
+	  if (*current == '%')
+		addPathInArg(path, in, itInArg, PathArgument::kindIndex);
+	  else {
+		ArrayIndex index = 0;
+		for (; current != end && *current >= '0' && *current <= '9'; ++current)
+		  index = index * 10 + ArrayIndex(*current - '0');
+		args_.push_back(index);
+	  }
+	  if (current == end || *++current != ']')
+		invalidPath(path, int(current - path.c_str()));
+	} else if (*current == '%') {
+	  addPathInArg(path, in, itInArg, PathArgument::kindKey);
+	  ++current;
+	} else if (*current == '.' || *current == ']') {
+	  ++current;
+	} else {
+	  const char* beginName = current;
+	  while (current != end && !strchr("[.", *current))
+		++current;
+	  args_.push_back(JSONCPP_STRING(beginName, current));
+	}
   }
 }
 
 void Path::addPathInArg(const JSONCPP_STRING& /*path*/,
-                        const InArgs& in,
-                        InArgs::const_iterator& itInArg,
-                        PathArgument::Kind kind) {
+						const InArgs& in,
+						InArgs::const_iterator& itInArg,
+						PathArgument::Kind kind) {
   if (itInArg == in.end()) {
-    // Error: missing argument %d
+	// Error: missing argument %d
   } else if ((*itInArg)->kind_ != kind) {
-    // Error: bad argument type
+	// Error: bad argument type
   } else {
-    args_.push_back(**itInArg++);
+	args_.push_back(**itInArg++);
   }
 }
 
@@ -1598,25 +1598,25 @@ void Path::invalidPath(const JSONCPP_STRING& /*path*/, int /*location*/) {
 const Value& Path::resolve(const Value& root) const {
   const Value* node = &root;
   for (Args::const_iterator it = args_.begin(); it != args_.end(); ++it) {
-    const PathArgument& arg = *it;
-    if (arg.kind_ == PathArgument::kindIndex) {
-      if (!node->isArray() || !node->isValidIndex(arg.index_)) {
-        // Error: unable to resolve path (array value expected at position...
-        return Value::null;
-      }
-      node = &((*node)[arg.index_]);
-    } else if (arg.kind_ == PathArgument::kindKey) {
-      if (!node->isObject()) {
-        // Error: unable to resolve path (object value expected at position...)
-        return Value::null;
-      }
-      node = &((*node)[arg.key_]);
-      if (node == &Value::nullSingleton()) {
-        // Error: unable to resolve path (object has no member named '' at
-        // position...)
-        return Value::null;
-      }
-    }
+	const PathArgument& arg = *it;
+	if (arg.kind_ == PathArgument::kindIndex) {
+	  if (!node->isArray() || !node->isValidIndex(arg.index_)) {
+		// Error: unable to resolve path (array value expected at position...
+		return Value::null;
+	  }
+	  node = &((*node)[arg.index_]);
+	} else if (arg.kind_ == PathArgument::kindKey) {
+	  if (!node->isObject()) {
+		// Error: unable to resolve path (object value expected at position...)
+		return Value::null;
+	  }
+	  node = &((*node)[arg.key_]);
+	  if (node == &Value::nullSingleton()) {
+		// Error: unable to resolve path (object has no member named '' at
+		// position...)
+		return Value::null;
+	  }
+	}
   }
   return *node;
 }
@@ -1624,18 +1624,18 @@ const Value& Path::resolve(const Value& root) const {
 Value Path::resolve(const Value& root, const Value& defaultValue) const {
   const Value* node = &root;
   for (Args::const_iterator it = args_.begin(); it != args_.end(); ++it) {
-    const PathArgument& arg = *it;
-    if (arg.kind_ == PathArgument::kindIndex) {
-      if (!node->isArray() || !node->isValidIndex(arg.index_))
-        return defaultValue;
-      node = &((*node)[arg.index_]);
-    } else if (arg.kind_ == PathArgument::kindKey) {
-      if (!node->isObject())
-        return defaultValue;
-      node = &((*node)[arg.key_]);
-      if (node == &Value::nullSingleton())
-        return defaultValue;
-    }
+	const PathArgument& arg = *it;
+	if (arg.kind_ == PathArgument::kindIndex) {
+	  if (!node->isArray() || !node->isValidIndex(arg.index_))
+		return defaultValue;
+	  node = &((*node)[arg.index_]);
+	} else if (arg.kind_ == PathArgument::kindKey) {
+	  if (!node->isObject())
+		return defaultValue;
+	  node = &((*node)[arg.key_]);
+	  if (node == &Value::nullSingleton())
+		return defaultValue;
+	}
   }
   return *node;
 }
@@ -1643,18 +1643,18 @@ Value Path::resolve(const Value& root, const Value& defaultValue) const {
 Value& Path::make(Value& root) const {
   Value* node = &root;
   for (Args::const_iterator it = args_.begin(); it != args_.end(); ++it) {
-    const PathArgument& arg = *it;
-    if (arg.kind_ == PathArgument::kindIndex) {
-      if (!node->isArray()) {
-        // Error: node is not an array at position ...
-      }
-      node = &((*node)[arg.index_]);
-    } else if (arg.kind_ == PathArgument::kindKey) {
-      if (!node->isObject()) {
-        // Error: node is not an object at position...
-      }
-      node = &((*node)[arg.key_]);
-    }
+	const PathArgument& arg = *it;
+	if (arg.kind_ == PathArgument::kindIndex) {
+	  if (!node->isArray()) {
+		// Error: node is not an array at position ...
+	  }
+	  node = &((*node)[arg.index_]);
+	} else if (arg.kind_ == PathArgument::kindKey) {
+	  if (!node->isObject()) {
+		// Error: node is not an object at position...
+	  }
+	  node = &((*node)[arg.key_]);
+	}
   }
   return *node;
 }

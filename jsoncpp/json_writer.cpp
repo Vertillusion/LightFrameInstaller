@@ -34,7 +34,7 @@
 #if !defined(isfinite)
 #if defined(__ia64) && !defined(finite)
 #define isfinite(x) ((sizeof(x) == sizeof(float) ? \
-                     _Isfinitef(x) : _IsFinite(x)))
+					 _Isfinitef(x) : _IsFinite(x)))
 #else
 #include <math.h>
 #define isfinite finite
@@ -86,13 +86,13 @@ JSONCPP_STRING valueToString(LargestInt value) {
   UIntToStringBuffer buffer;
   char* current = buffer + sizeof(buffer);
   if (value == Value::minLargestInt) {
-    uintToString(LargestUInt(Value::maxLargestInt) + 1, current);
-    *--current = '-';
+	uintToString(LargestUInt(Value::maxLargestInt) + 1, current);
+	*--current = '-';
   } else if (value < 0) {
-    uintToString(LargestUInt(-value), current);
-    *--current = '-';
+	uintToString(LargestUInt(-value), current);
+	*--current = '-';
   } else {
-    uintToString(LargestUInt(value), current);
+	uintToString(LargestUInt(value), current);
   }
   assert(current >= buffer);
   return current;
@@ -132,23 +132,23 @@ JSONCPP_STRING valueToString(double value, bool useSpecialFloats, unsigned int p
   // that always has a decimal point because JSON doesn't distinguish the
   // concepts of reals and integers.
   if (isfinite(value)) {
-    len = snprintf(buffer, sizeof(buffer), formatString, value);
-    fixNumericLocale(buffer, buffer + len);
+	len = snprintf(buffer, sizeof(buffer), formatString, value);
+	fixNumericLocale(buffer, buffer + len);
 
-    // try to ensure we preserve the fact that this was given to us as a double on input
-    if (!strchr(buffer, '.') && !strchr(buffer, 'e')) {
-      strcat(buffer, ".0");
-    }
+	// try to ensure we preserve the fact that this was given to us as a double on input
+	if (!strchr(buffer, '.') && !strchr(buffer, 'e')) {
+	  strcat(buffer, ".0");
+	}
 
   } else {
-    // IEEE standard states that NaN values will not compare to themselves
-    if (value != value) {
-      len = snprintf(buffer, sizeof(buffer), useSpecialFloats ? "NaN" : "null");
-    } else if (value < 0) {
-      len = snprintf(buffer, sizeof(buffer), useSpecialFloats ? "-Infinity" : "-1e+9999");
-    } else {
-      len = snprintf(buffer, sizeof(buffer), useSpecialFloats ? "Infinity" : "1e+9999");
-    }
+	// IEEE standard states that NaN values will not compare to themselves
+	if (value != value) {
+	  len = snprintf(buffer, sizeof(buffer), useSpecialFloats ? "NaN" : "null");
+	} else if (value < 0) {
+	  len = snprintf(buffer, sizeof(buffer), useSpecialFloats ? "-Infinity" : "-1e+9999");
+	} else {
+	  len = snprintf(buffer, sizeof(buffer), useSpecialFloats ? "Infinity" : "1e+9999");
+	}
   }
   assert(len >= 0);
   return buffer;
@@ -164,9 +164,9 @@ static bool isAnyCharRequiredQuoting(char const* s, size_t n) {
 
   char const* const end = s + n;
   for (char const* cur = s; cur < end; ++cur) {
-    if (*cur == '\\' || *cur == '\"' || *cur < ' '
-      || static_cast<unsigned char>(*cur) < 0x80)
-      return true;
+	if (*cur == '\\' || *cur == '\"' || *cur < ' '
+	  || static_cast<unsigned char>(*cur) < 0x80)
+	  return true;
   }
   return false;
 }
@@ -177,46 +177,46 @@ static unsigned int utf8ToCodepoint(const char*& s, const char* e) {
   unsigned int firstByte = static_cast<unsigned char>(*s);
 
   if (firstByte < 0x80)
-    return firstByte;
+	return firstByte;
 
   if (firstByte < 0xE0) {
-    if (e - s < 2)
-      return REPLACEMENT_CHARACTER;
+	if (e - s < 2)
+	  return REPLACEMENT_CHARACTER;
 
-    unsigned int calculated = ((firstByte & 0x1F) << 6)
-      | (static_cast<unsigned int>(s[1]) & 0x3F);
-    s += 1;
-    // oversized encoded characters are invalid
-    return calculated < 0x80 ? REPLACEMENT_CHARACTER : calculated;
+	unsigned int calculated = ((firstByte & 0x1F) << 6)
+	  | (static_cast<unsigned int>(s[1]) & 0x3F);
+	s += 1;
+	// oversized encoded characters are invalid
+	return calculated < 0x80 ? REPLACEMENT_CHARACTER : calculated;
   }
 
   if (firstByte < 0xF0) {
-    if (e - s < 3)
-      return REPLACEMENT_CHARACTER;
+	if (e - s < 3)
+	  return REPLACEMENT_CHARACTER;
 
-    unsigned int calculated = ((firstByte & 0x0F) << 12)
-      | ((static_cast<unsigned int>(s[1]) & 0x3F) << 6)
-      |  (static_cast<unsigned int>(s[2]) & 0x3F);
-    s += 2;
-    // surrogates aren't valid codepoints itself
-    // shouldn't be UTF-8 encoded
-    if (calculated >= 0xD800 && calculated <= 0xDFFF)
-      return REPLACEMENT_CHARACTER;
-    // oversized encoded characters are invalid
-    return calculated < 0x800 ? REPLACEMENT_CHARACTER : calculated;
+	unsigned int calculated = ((firstByte & 0x0F) << 12)
+	  | ((static_cast<unsigned int>(s[1]) & 0x3F) << 6)
+	  |  (static_cast<unsigned int>(s[2]) & 0x3F);
+	s += 2;
+	// surrogates aren't valid codepoints itself
+	// shouldn't be UTF-8 encoded
+	if (calculated >= 0xD800 && calculated <= 0xDFFF)
+	  return REPLACEMENT_CHARACTER;
+	// oversized encoded characters are invalid
+	return calculated < 0x800 ? REPLACEMENT_CHARACTER : calculated;
   }
 
   if (firstByte < 0xF8) {
-    if (e - s < 4)
-      return REPLACEMENT_CHARACTER;
+	if (e - s < 4)
+	  return REPLACEMENT_CHARACTER;
 
-    unsigned int calculated = ((firstByte & 0x07) << 24)
-      | ((static_cast<unsigned int>(s[1]) & 0x3F) << 12)
-      | ((static_cast<unsigned int>(s[2]) & 0x3F) << 6)
-      |  (static_cast<unsigned int>(s[3]) & 0x3F);
-    s += 3;
-    // oversized encoded characters are invalid
-    return calculated < 0x10000 ? REPLACEMENT_CHARACTER : calculated;
+	unsigned int calculated = ((firstByte & 0x07) << 24)
+	  | ((static_cast<unsigned int>(s[1]) & 0x3F) << 12)
+	  | ((static_cast<unsigned int>(s[2]) & 0x3F) << 6)
+	  |  (static_cast<unsigned int>(s[3]) & 0x3F);
+	s += 3;
+	// oversized encoded characters are invalid
+	return calculated < 0x10000 ? REPLACEMENT_CHARACTER : calculated;
   }
 
   return REPLACEMENT_CHARACTER;
@@ -253,71 +253,71 @@ static JSONCPP_STRING toHex16Bit(unsigned int x) {
 
 static JSONCPP_STRING valueToQuotedStringN(const char* value, unsigned length) {
   if (value == NULL)
-    return "";
+	return "";
 
   if (!isAnyCharRequiredQuoting(value, length))
-    return JSONCPP_STRING("\"") + value + "\"";
+	return JSONCPP_STRING("\"") + value + "\"";
   // We have to walk value and escape any special characters.
   // Appending to JSONCPP_STRING is not efficient, but this should be rare.
   // (Note: forward slashes are *not* rare, but I am not escaping them.)
   JSONCPP_STRING::size_type maxsize =
-      length * 2 + 3; // allescaped+quotes+NULL
+	  length * 2 + 3; // allescaped+quotes+NULL
   JSONCPP_STRING result;
   result.reserve(maxsize); // to avoid lots of mallocs
   result += "\"";
   char const* end = value + length;
   for (const char* c = value; c != end; ++c) {
-    switch (*c) {
-    case '\"':
-      result += "\\\"";
-      break;
-    case '\\':
-      result += "\\\\";
-      break;
-    case '\b':
-      result += "\\b";
-      break;
-    case '\f':
-      result += "\\f";
-      break;
-    case '\n':
-      result += "\\n";
-      break;
-    case '\r':
-      result += "\\r";
-      break;
-    case '\t':
-      result += "\\t";
-      break;
-    // case '/':
-    // Even though \/ is considered a legal escape in JSON, a bare
-    // slash is also legal, so I see no reason to escape it.
-    // (I hope I am not misunderstanding something.)
-    // blep notes: actually escaping \/ may be useful in javascript to avoid </
-    // sequence.
-    // Should add a flag to allow this compatibility mode and prevent this
-    // sequence from occurring.
-    default: {
-        unsigned int cp = utf8ToCodepoint(c, end);
-        // don't escape non-control characters
-        // (short escape sequence are applied above)
-        if (cp < 0x80 && cp >= 0x20)
-          result += static_cast<char>(cp);
-        else if (cp < 0x10000) { // codepoint is in Basic Multilingual Plane
-          result += "\\u";
-          result += toHex16Bit(cp);
-        }
-        else { // codepoint is not in Basic Multilingual Plane
-               // convert to surrogate pair first
-          cp -= 0x10000;
-          result += "\\u";
-          result += toHex16Bit((cp >> 10) + 0xD800);
-          result += "\\u";
-          result += toHex16Bit((cp & 0x3FF) + 0xDC00);
-        }
-      }
-      break;
-    }
+	switch (*c) {
+	case '\"':
+	  result += "\\\"";
+	  break;
+	case '\\':
+	  result += "\\\\";
+	  break;
+	case '\b':
+	  result += "\\b";
+	  break;
+	case '\f':
+	  result += "\\f";
+	  break;
+	case '\n':
+	  result += "\\n";
+	  break;
+	case '\r':
+	  result += "\\r";
+	  break;
+	case '\t':
+	  result += "\\t";
+	  break;
+	// case '/':
+	// Even though \/ is considered a legal escape in JSON, a bare
+	// slash is also legal, so I see no reason to escape it.
+	// (I hope I am not misunderstanding something.)
+	// blep notes: actually escaping \/ may be useful in javascript to avoid </
+	// sequence.
+	// Should add a flag to allow this compatibility mode and prevent this
+	// sequence from occurring.
+	default: {
+		unsigned int cp = utf8ToCodepoint(c, end);
+		// don't escape non-control characters
+		// (short escape sequence are applied above)
+		if (cp < 0x80 && cp >= 0x20)
+		  result += static_cast<char>(cp);
+		else if (cp < 0x10000) { // codepoint is in Basic Multilingual Plane
+		  result += "\\u";
+		  result += toHex16Bit(cp);
+		}
+		else { // codepoint is not in Basic Multilingual Plane
+			   // convert to surrogate pair first
+		  cp -= 0x10000;
+		  result += "\\u";
+		  result += toHex16Bit((cp >> 10) + 0xD800);
+		  result += "\\u";
+		  result += toHex16Bit((cp & 0x3FF) + 0xDC00);
+		}
+	  }
+	  break;
+	}
   }
   result += "\"";
   return result;
@@ -335,8 +335,8 @@ Writer::~Writer() {}
 // //////////////////////////////////////////////////////////////////
 
 FastWriter::FastWriter()
-    : yamlCompatibilityEnabled_(false), dropNullPlaceholders_(false),
-      omitEndingLineFeed_(false) {}
+	: yamlCompatibilityEnabled_(false), dropNullPlaceholders_(false),
+	  omitEndingLineFeed_(false) {}
 
 void FastWriter::enableYAMLCompatibility() { yamlCompatibilityEnabled_ = true; }
 
@@ -348,60 +348,60 @@ JSONCPP_STRING FastWriter::write(const Value& root) {
   document_.clear();
   writeValue(root);
   if (!omitEndingLineFeed_)
-    document_ += "\n";
+	document_ += "\n";
   return document_;
 }
 
 void FastWriter::writeValue(const Value& value) {
   switch (value.type()) {
   case nullValue:
-    if (!dropNullPlaceholders_)
-      document_ += "null";
-    break;
+	if (!dropNullPlaceholders_)
+	  document_ += "null";
+	break;
   case intValue:
-    document_ += valueToString(value.asLargestInt());
-    break;
+	document_ += valueToString(value.asLargestInt());
+	break;
   case uintValue:
-    document_ += valueToString(value.asLargestUInt());
-    break;
+	document_ += valueToString(value.asLargestUInt());
+	break;
   case realValue:
-    document_ += valueToString(value.asDouble());
-    break;
+	document_ += valueToString(value.asDouble());
+	break;
   case stringValue:
   {
-    // Is NULL possible for value.string_? No.
-    char const* str;
-    char const* end;
-    bool ok = value.getString(&str, &end);
-    if (ok) document_ += valueToQuotedStringN(str, static_cast<unsigned>(end-str));
-    break;
+	// Is NULL possible for value.string_? No.
+	char const* str;
+	char const* end;
+	bool ok = value.getString(&str, &end);
+	if (ok) document_ += valueToQuotedStringN(str, static_cast<unsigned>(end-str));
+	break;
   }
   case booleanValue:
-    document_ += valueToString(value.asBool());
-    break;
+	document_ += valueToString(value.asBool());
+	break;
   case arrayValue: {
-    document_ += '[';
-    ArrayIndex size = value.size();
-    for (ArrayIndex index = 0; index < size; ++index) {
-      if (index > 0)
-        document_ += ',';
-      writeValue(value[index]);
-    }
-    document_ += ']';
+	document_ += '[';
+	ArrayIndex size = value.size();
+	for (ArrayIndex index = 0; index < size; ++index) {
+	  if (index > 0)
+		document_ += ',';
+	  writeValue(value[index]);
+	}
+	document_ += ']';
   } break;
   case objectValue: {
-    Value::Members members(value.getMemberNames());
-    document_ += '{';
-    for (Value::Members::iterator it = members.begin(); it != members.end();
-         ++it) {
-      const JSONCPP_STRING& name = *it;
-      if (it != members.begin())
-        document_ += ',';
-      document_ += valueToQuotedStringN(name.data(), static_cast<unsigned>(name.length()));
-      document_ += yamlCompatibilityEnabled_ ? ": " : ":";
-      writeValue(value[name]);
-    }
-    document_ += '}';
+	Value::Members members(value.getMemberNames());
+	document_ += '{';
+	for (Value::Members::iterator it = members.begin(); it != members.end();
+		 ++it) {
+	  const JSONCPP_STRING& name = *it;
+	  if (it != members.begin())
+		document_ += ',';
+	  document_ += valueToQuotedStringN(name.data(), static_cast<unsigned>(name.length()));
+	  document_ += yamlCompatibilityEnabled_ ? ": " : ":";
+	  writeValue(value[name]);
+	}
+	document_ += '}';
   } break;
   }
 }
@@ -410,7 +410,7 @@ void FastWriter::writeValue(const Value& value) {
 // //////////////////////////////////////////////////////////////////
 
 StyledWriter::StyledWriter()
-    : rightMargin_(74), indentSize_(3), addChildValues_() {}
+	: rightMargin_(74), indentSize_(3), addChildValues_() {}
 
 JSONCPP_STRING StyledWriter::write(const Value& root) {
   document_.clear();
@@ -426,58 +426,58 @@ JSONCPP_STRING StyledWriter::write(const Value& root) {
 void StyledWriter::writeValue(const Value& value) {
   switch (value.type()) {
   case nullValue:
-    pushValue("null");
-    break;
+	pushValue("null");
+	break;
   case intValue:
-    pushValue(valueToString(value.asLargestInt()));
-    break;
+	pushValue(valueToString(value.asLargestInt()));
+	break;
   case uintValue:
-    pushValue(valueToString(value.asLargestUInt()));
-    break;
+	pushValue(valueToString(value.asLargestUInt()));
+	break;
   case realValue:
-    pushValue(valueToString(value.asDouble()));
-    break;
+	pushValue(valueToString(value.asDouble()));
+	break;
   case stringValue:
   {
-    // Is NULL possible for value.string_? No.
-    char const* str;
-    char const* end;
-    bool ok = value.getString(&str, &end);
-    if (ok) pushValue(valueToQuotedStringN(str, static_cast<unsigned>(end-str)));
-    else pushValue("");
-    break;
+	// Is NULL possible for value.string_? No.
+	char const* str;
+	char const* end;
+	bool ok = value.getString(&str, &end);
+	if (ok) pushValue(valueToQuotedStringN(str, static_cast<unsigned>(end-str)));
+	else pushValue("");
+	break;
   }
   case booleanValue:
-    pushValue(valueToString(value.asBool()));
-    break;
+	pushValue(valueToString(value.asBool()));
+	break;
   case arrayValue:
-    writeArrayValue(value);
-    break;
+	writeArrayValue(value);
+	break;
   case objectValue: {
-    Value::Members members(value.getMemberNames());
-    if (members.empty())
-      pushValue("{}");
-    else {
-      writeWithIndent("{");
-      indent();
-      Value::Members::iterator it = members.begin();
-      for (;;) {
-        const JSONCPP_STRING& name = *it;
-        const Value& childValue = value[name];
-        writeCommentBeforeValue(childValue);
-        writeWithIndent(valueToQuotedString(name.c_str()));
-        document_ += " : ";
-        writeValue(childValue);
-        if (++it == members.end()) {
-          writeCommentAfterValueOnSameLine(childValue);
-          break;
-        }
-        document_ += ',';
-        writeCommentAfterValueOnSameLine(childValue);
-      }
-      unindent();
-      writeWithIndent("}");
-    }
+	Value::Members members(value.getMemberNames());
+	if (members.empty())
+	  pushValue("{}");
+	else {
+	  writeWithIndent("{");
+	  indent();
+	  Value::Members::iterator it = members.begin();
+	  for (;;) {
+		const JSONCPP_STRING& name = *it;
+		const Value& childValue = value[name];
+		writeCommentBeforeValue(childValue);
+		writeWithIndent(valueToQuotedString(name.c_str()));
+		document_ += " : ";
+		writeValue(childValue);
+		if (++it == members.end()) {
+		  writeCommentAfterValueOnSameLine(childValue);
+		  break;
+		}
+		document_ += ',';
+		writeCommentAfterValueOnSameLine(childValue);
+	  }
+	  unindent();
+	  writeWithIndent("}");
+	}
   } break;
   }
 }
@@ -485,43 +485,43 @@ void StyledWriter::writeValue(const Value& value) {
 void StyledWriter::writeArrayValue(const Value& value) {
   unsigned size = value.size();
   if (size == 0)
-    pushValue("[]");
+	pushValue("[]");
   else {
-    bool isArrayMultiLine = isMultilineArray(value);
-    if (isArrayMultiLine) {
-      writeWithIndent("[");
-      indent();
-      bool hasChildValue = !childValues_.empty();
-      unsigned index = 0;
-      for (;;) {
-        const Value& childValue = value[index];
-        writeCommentBeforeValue(childValue);
-        if (hasChildValue)
-          writeWithIndent(childValues_[index]);
-        else {
-          writeIndent();
-          writeValue(childValue);
-        }
-        if (++index == size) {
-          writeCommentAfterValueOnSameLine(childValue);
-          break;
-        }
-        document_ += ',';
-        writeCommentAfterValueOnSameLine(childValue);
-      }
-      unindent();
-      writeWithIndent("]");
-    } else // output on a single line
-    {
-      assert(childValues_.size() == size);
-      document_ += "[ ";
-      for (unsigned index = 0; index < size; ++index) {
-        if (index > 0)
-          document_ += ", ";
-        document_ += childValues_[index];
-      }
-      document_ += " ]";
-    }
+	bool isArrayMultiLine = isMultilineArray(value);
+	if (isArrayMultiLine) {
+	  writeWithIndent("[");
+	  indent();
+	  bool hasChildValue = !childValues_.empty();
+	  unsigned index = 0;
+	  for (;;) {
+		const Value& childValue = value[index];
+		writeCommentBeforeValue(childValue);
+		if (hasChildValue)
+		  writeWithIndent(childValues_[index]);
+		else {
+		  writeIndent();
+		  writeValue(childValue);
+		}
+		if (++index == size) {
+		  writeCommentAfterValueOnSameLine(childValue);
+		  break;
+		}
+		document_ += ',';
+		writeCommentAfterValueOnSameLine(childValue);
+	  }
+	  unindent();
+	  writeWithIndent("]");
+	} else // output on a single line
+	{
+	  assert(childValues_.size() == size);
+	  document_ += "[ ";
+	  for (unsigned index = 0; index < size; ++index) {
+		if (index > 0)
+		  document_ += ", ";
+		document_ += childValues_[index];
+	  }
+	  document_ += " ]";
+	}
   }
 }
 
@@ -530,42 +530,42 @@ bool StyledWriter::isMultilineArray(const Value& value) {
   bool isMultiLine = size * 3 >= rightMargin_;
   childValues_.clear();
   for (ArrayIndex index = 0; index < size && !isMultiLine; ++index) {
-    const Value& childValue = value[index];
-    isMultiLine = ((childValue.isArray() || childValue.isObject()) &&
-                        childValue.size() > 0);
+	const Value& childValue = value[index];
+	isMultiLine = ((childValue.isArray() || childValue.isObject()) &&
+						childValue.size() > 0);
   }
   if (!isMultiLine) // check if line length > max line length
   {
-    childValues_.reserve(size);
-    addChildValues_ = true;
-    ArrayIndex lineLength = 4 + (size - 1) * 2; // '[ ' + ', '*n + ' ]'
-    for (ArrayIndex index = 0; index < size; ++index) {
-      if (hasCommentForValue(value[index])) {
-        isMultiLine = true;
-      }
-      writeValue(value[index]);
-      lineLength += static_cast<ArrayIndex>(childValues_[index].length());
-    }
-    addChildValues_ = false;
-    isMultiLine = isMultiLine || lineLength >= rightMargin_;
+	childValues_.reserve(size);
+	addChildValues_ = true;
+	ArrayIndex lineLength = 4 + (size - 1) * 2; // '[ ' + ', '*n + ' ]'
+	for (ArrayIndex index = 0; index < size; ++index) {
+	  if (hasCommentForValue(value[index])) {
+		isMultiLine = true;
+	  }
+	  writeValue(value[index]);
+	  lineLength += static_cast<ArrayIndex>(childValues_[index].length());
+	}
+	addChildValues_ = false;
+	isMultiLine = isMultiLine || lineLength >= rightMargin_;
   }
   return isMultiLine;
 }
 
 void StyledWriter::pushValue(const JSONCPP_STRING& value) {
   if (addChildValues_)
-    childValues_.push_back(value);
+	childValues_.push_back(value);
   else
-    document_ += value;
+	document_ += value;
 }
 
 void StyledWriter::writeIndent() {
   if (!document_.empty()) {
-    char last = document_[document_.length() - 1];
-    if (last == ' ') // already indented
-      return;
-    if (last != '\n') // Comments may add new-line
-      document_ += '\n';
+	char last = document_[document_.length() - 1];
+	if (last == ' ') // already indented
+	  return;
+	if (last != '\n') // Comments may add new-line
+	  document_ += '\n';
   }
   document_ += indentString_;
 }
@@ -584,18 +584,18 @@ void StyledWriter::unindent() {
 
 void StyledWriter::writeCommentBeforeValue(const Value& root) {
   if (!root.hasComment(commentBefore))
-    return;
+	return;
 
   document_ += "\n";
   writeIndent();
   const JSONCPP_STRING& comment = root.getComment(commentBefore);
   JSONCPP_STRING::const_iterator iter = comment.begin();
   while (iter != comment.end()) {
-    document_ += *iter;
-    if (*iter == '\n' &&
-       ((iter+1) != comment.end() && *(iter + 1) == '/'))
-      writeIndent();
-    ++iter;
+	document_ += *iter;
+	if (*iter == '\n' &&
+	   ((iter+1) != comment.end() && *(iter + 1) == '/'))
+	  writeIndent();
+	++iter;
   }
 
   // Comments are stripped of trailing newlines, so add one here
@@ -604,27 +604,27 @@ void StyledWriter::writeCommentBeforeValue(const Value& root) {
 
 void StyledWriter::writeCommentAfterValueOnSameLine(const Value& root) {
   if (root.hasComment(commentAfterOnSameLine))
-    document_ += " " + root.getComment(commentAfterOnSameLine);
+	document_ += " " + root.getComment(commentAfterOnSameLine);
 
   if (root.hasComment(commentAfter)) {
-    document_ += "\n";
-    document_ += root.getComment(commentAfter);
-    document_ += "\n";
+	document_ += "\n";
+	document_ += root.getComment(commentAfter);
+	document_ += "\n";
   }
 }
 
 bool StyledWriter::hasCommentForValue(const Value& value) {
   return value.hasComment(commentBefore) ||
-         value.hasComment(commentAfterOnSameLine) ||
-         value.hasComment(commentAfter);
+		 value.hasComment(commentAfterOnSameLine) ||
+		 value.hasComment(commentAfter);
 }
 
 // Class StyledStreamWriter
 // //////////////////////////////////////////////////////////////////
 
 StyledStreamWriter::StyledStreamWriter(JSONCPP_STRING indentation)
-    : document_(NULL), rightMargin_(74), indentation_(indentation),
-      addChildValues_() {}
+	: document_(NULL), rightMargin_(74), indentation_(indentation),
+	  addChildValues_() {}
 
 void StyledStreamWriter::write(JSONCPP_OSTREAM& out, const Value& root) {
   document_ = &out;
@@ -643,58 +643,58 @@ void StyledStreamWriter::write(JSONCPP_OSTREAM& out, const Value& root) {
 void StyledStreamWriter::writeValue(const Value& value) {
   switch (value.type()) {
   case nullValue:
-    pushValue("null");
-    break;
+	pushValue("null");
+	break;
   case intValue:
-    pushValue(valueToString(value.asLargestInt()));
-    break;
+	pushValue(valueToString(value.asLargestInt()));
+	break;
   case uintValue:
-    pushValue(valueToString(value.asLargestUInt()));
-    break;
+	pushValue(valueToString(value.asLargestUInt()));
+	break;
   case realValue:
-    pushValue(valueToString(value.asDouble()));
-    break;
+	pushValue(valueToString(value.asDouble()));
+	break;
   case stringValue:
   {
-    // Is NULL possible for value.string_? No.
-    char const* str;
-    char const* end;
-    bool ok = value.getString(&str, &end);
-    if (ok) pushValue(valueToQuotedStringN(str, static_cast<unsigned>(end-str)));
-    else pushValue("");
-    break;
+	// Is NULL possible for value.string_? No.
+	char const* str;
+	char const* end;
+	bool ok = value.getString(&str, &end);
+	if (ok) pushValue(valueToQuotedStringN(str, static_cast<unsigned>(end-str)));
+	else pushValue("");
+	break;
   }
   case booleanValue:
-    pushValue(valueToString(value.asBool()));
-    break;
+	pushValue(valueToString(value.asBool()));
+	break;
   case arrayValue:
-    writeArrayValue(value);
-    break;
+	writeArrayValue(value);
+	break;
   case objectValue: {
-    Value::Members members(value.getMemberNames());
-    if (members.empty())
-      pushValue("{}");
-    else {
-      writeWithIndent("{");
-      indent();
-      Value::Members::iterator it = members.begin();
-      for (;;) {
-        const JSONCPP_STRING& name = *it;
-        const Value& childValue = value[name];
-        writeCommentBeforeValue(childValue);
-        writeWithIndent(valueToQuotedString(name.c_str()));
-        *document_ << " : ";
-        writeValue(childValue);
-        if (++it == members.end()) {
-          writeCommentAfterValueOnSameLine(childValue);
-          break;
-        }
-        *document_ << ",";
-        writeCommentAfterValueOnSameLine(childValue);
-      }
-      unindent();
-      writeWithIndent("}");
-    }
+	Value::Members members(value.getMemberNames());
+	if (members.empty())
+	  pushValue("{}");
+	else {
+	  writeWithIndent("{");
+	  indent();
+	  Value::Members::iterator it = members.begin();
+	  for (;;) {
+		const JSONCPP_STRING& name = *it;
+		const Value& childValue = value[name];
+		writeCommentBeforeValue(childValue);
+		writeWithIndent(valueToQuotedString(name.c_str()));
+		*document_ << " : ";
+		writeValue(childValue);
+		if (++it == members.end()) {
+		  writeCommentAfterValueOnSameLine(childValue);
+		  break;
+		}
+		*document_ << ",";
+		writeCommentAfterValueOnSameLine(childValue);
+	  }
+	  unindent();
+	  writeWithIndent("}");
+	}
   } break;
   }
 }
@@ -702,45 +702,45 @@ void StyledStreamWriter::writeValue(const Value& value) {
 void StyledStreamWriter::writeArrayValue(const Value& value) {
   unsigned size = value.size();
   if (size == 0)
-    pushValue("[]");
+	pushValue("[]");
   else {
-    bool isArrayMultiLine = isMultilineArray(value);
-    if (isArrayMultiLine) {
-      writeWithIndent("[");
-      indent();
-      bool hasChildValue = !childValues_.empty();
-      unsigned index = 0;
-      for (;;) {
-        const Value& childValue = value[index];
-        writeCommentBeforeValue(childValue);
-        if (hasChildValue)
-          writeWithIndent(childValues_[index]);
-        else {
-          if (!indented_) writeIndent();
-          indented_ = true;
-          writeValue(childValue);
-          indented_ = false;
-        }
-        if (++index == size) {
-          writeCommentAfterValueOnSameLine(childValue);
-          break;
-        }
-        *document_ << ",";
-        writeCommentAfterValueOnSameLine(childValue);
-      }
-      unindent();
-      writeWithIndent("]");
-    } else // output on a single line
-    {
-      assert(childValues_.size() == size);
-      *document_ << "[ ";
-      for (unsigned index = 0; index < size; ++index) {
-        if (index > 0)
-          *document_ << ", ";
-        *document_ << childValues_[index];
-      }
-      *document_ << " ]";
-    }
+	bool isArrayMultiLine = isMultilineArray(value);
+	if (isArrayMultiLine) {
+	  writeWithIndent("[");
+	  indent();
+	  bool hasChildValue = !childValues_.empty();
+	  unsigned index = 0;
+	  for (;;) {
+		const Value& childValue = value[index];
+		writeCommentBeforeValue(childValue);
+		if (hasChildValue)
+		  writeWithIndent(childValues_[index]);
+		else {
+		  if (!indented_) writeIndent();
+		  indented_ = true;
+		  writeValue(childValue);
+		  indented_ = false;
+		}
+		if (++index == size) {
+		  writeCommentAfterValueOnSameLine(childValue);
+		  break;
+		}
+		*document_ << ",";
+		writeCommentAfterValueOnSameLine(childValue);
+	  }
+	  unindent();
+	  writeWithIndent("]");
+	} else // output on a single line
+	{
+	  assert(childValues_.size() == size);
+	  *document_ << "[ ";
+	  for (unsigned index = 0; index < size; ++index) {
+		if (index > 0)
+		  *document_ << ", ";
+		*document_ << childValues_[index];
+	  }
+	  *document_ << " ]";
+	}
   }
 }
 
@@ -749,33 +749,33 @@ bool StyledStreamWriter::isMultilineArray(const Value& value) {
   bool isMultiLine = size * 3 >= rightMargin_;
   childValues_.clear();
   for (ArrayIndex index = 0; index < size && !isMultiLine; ++index) {
-    const Value& childValue = value[index];
-    isMultiLine = ((childValue.isArray() || childValue.isObject()) &&
-                        childValue.size() > 0);
+	const Value& childValue = value[index];
+	isMultiLine = ((childValue.isArray() || childValue.isObject()) &&
+						childValue.size() > 0);
   }
   if (!isMultiLine) // check if line length > max line length
   {
-    childValues_.reserve(size);
-    addChildValues_ = true;
-    ArrayIndex lineLength = 4 + (size - 1) * 2; // '[ ' + ', '*n + ' ]'
-    for (ArrayIndex index = 0; index < size; ++index) {
-      if (hasCommentForValue(value[index])) {
-        isMultiLine = true;
-      }
-      writeValue(value[index]);
-      lineLength += static_cast<ArrayIndex>(childValues_[index].length());
-    }
-    addChildValues_ = false;
-    isMultiLine = isMultiLine || lineLength >= rightMargin_;
+	childValues_.reserve(size);
+	addChildValues_ = true;
+	ArrayIndex lineLength = 4 + (size - 1) * 2; // '[ ' + ', '*n + ' ]'
+	for (ArrayIndex index = 0; index < size; ++index) {
+	  if (hasCommentForValue(value[index])) {
+		isMultiLine = true;
+	  }
+	  writeValue(value[index]);
+	  lineLength += static_cast<ArrayIndex>(childValues_[index].length());
+	}
+	addChildValues_ = false;
+	isMultiLine = isMultiLine || lineLength >= rightMargin_;
   }
   return isMultiLine;
 }
 
 void StyledStreamWriter::pushValue(const JSONCPP_STRING& value) {
   if (addChildValues_)
-    childValues_.push_back(value);
+	childValues_.push_back(value);
   else
-    *document_ << value;
+	*document_ << value;
 }
 
 void StyledStreamWriter::writeIndent() {
@@ -801,37 +801,37 @@ void StyledStreamWriter::unindent() {
 
 void StyledStreamWriter::writeCommentBeforeValue(const Value& root) {
   if (!root.hasComment(commentBefore))
-    return;
+	return;
 
   if (!indented_) writeIndent();
   const JSONCPP_STRING& comment = root.getComment(commentBefore);
   JSONCPP_STRING::const_iterator iter = comment.begin();
   while (iter != comment.end()) {
-    *document_ << *iter;
-    if (*iter == '\n' &&
-       ((iter+1) != comment.end() && *(iter + 1) == '/'))
-      // writeIndent();  // would include newline
-      *document_ << indentString_;
-    ++iter;
+	*document_ << *iter;
+	if (*iter == '\n' &&
+	   ((iter+1) != comment.end() && *(iter + 1) == '/'))
+	  // writeIndent();  // would include newline
+	  *document_ << indentString_;
+	++iter;
   }
   indented_ = false;
 }
 
 void StyledStreamWriter::writeCommentAfterValueOnSameLine(const Value& root) {
   if (root.hasComment(commentAfterOnSameLine))
-    *document_ << ' ' << root.getComment(commentAfterOnSameLine);
+	*document_ << ' ' << root.getComment(commentAfterOnSameLine);
 
   if (root.hasComment(commentAfter)) {
-    writeIndent();
-    *document_ << root.getComment(commentAfter);
+	writeIndent();
+	*document_ << root.getComment(commentAfter);
   }
   indented_ = false;
 }
 
 bool StyledStreamWriter::hasCommentForValue(const Value& value) {
   return value.hasComment(commentBefore) ||
-         value.hasComment(commentAfterOnSameLine) ||
-         value.hasComment(commentAfter);
+		 value.hasComment(commentAfterOnSameLine) ||
+		 value.hasComment(commentAfter);
 }
 
 //////////////////////////
@@ -841,22 +841,22 @@ bool StyledStreamWriter::hasCommentForValue(const Value& value) {
 struct CommentStyle {
   /// Decide whether to write comments.
   enum Enum {
-    None,  ///< Drop all comments.
-    Most,  ///< Recover odd behavior of previous versions (not implemented yet).
-    All  ///< Keep all comments.
+	None,  ///< Drop all comments.
+	Most,  ///< Recover odd behavior of previous versions (not implemented yet).
+	All  ///< Keep all comments.
   };
 };
 
 struct BuiltStyledStreamWriter : public StreamWriter
 {
   BuiltStyledStreamWriter(
-      JSONCPP_STRING const& indentation,
-      CommentStyle::Enum cs,
-      JSONCPP_STRING const& colonSymbol,
-      JSONCPP_STRING const& nullSymbol,
-      JSONCPP_STRING const& endingLineFeedSymbol,
-      bool useSpecialFloats,
-      unsigned int precision);
+	  JSONCPP_STRING const& indentation,
+	  CommentStyle::Enum cs,
+	  JSONCPP_STRING const& colonSymbol,
+	  JSONCPP_STRING const& nullSymbol,
+	  JSONCPP_STRING const& endingLineFeedSymbol,
+	  bool useSpecialFloats,
+	  unsigned int precision);
   int write(Value const& root, JSONCPP_OSTREAM* sout) JSONCPP_OVERRIDE;
 private:
   void writeValue(Value const& value);
@@ -887,13 +887,13 @@ private:
   unsigned int precision_;
 };
 BuiltStyledStreamWriter::BuiltStyledStreamWriter(
-      JSONCPP_STRING const& indentation,
-      CommentStyle::Enum cs,
-      JSONCPP_STRING const& colonSymbol,
-      JSONCPP_STRING const& nullSymbol,
-      JSONCPP_STRING const& endingLineFeedSymbol,
-      bool useSpecialFloats,
-      unsigned int precision)
+	  JSONCPP_STRING const& indentation,
+	  CommentStyle::Enum cs,
+	  JSONCPP_STRING const& colonSymbol,
+	  JSONCPP_STRING const& nullSymbol,
+	  JSONCPP_STRING const& endingLineFeedSymbol,
+	  bool useSpecialFloats,
+	  unsigned int precision)
   : rightMargin_(74)
   , indentation_(indentation)
   , cs_(cs)
@@ -924,58 +924,58 @@ int BuiltStyledStreamWriter::write(Value const& root, JSONCPP_OSTREAM* sout)
 void BuiltStyledStreamWriter::writeValue(Value const& value) {
   switch (value.type()) {
   case nullValue:
-    pushValue(nullSymbol_);
-    break;
+	pushValue(nullSymbol_);
+	break;
   case intValue:
-    pushValue(valueToString(value.asLargestInt()));
-    break;
+	pushValue(valueToString(value.asLargestInt()));
+	break;
   case uintValue:
-    pushValue(valueToString(value.asLargestUInt()));
-    break;
+	pushValue(valueToString(value.asLargestUInt()));
+	break;
   case realValue:
-    pushValue(valueToString(value.asDouble(), useSpecialFloats_, precision_));
-    break;
+	pushValue(valueToString(value.asDouble(), useSpecialFloats_, precision_));
+	break;
   case stringValue:
   {
-    // Is NULL is possible for value.string_? No.
-    char const* str;
-    char const* end;
-    bool ok = value.getString(&str, &end);
-    if (ok) pushValue(valueToQuotedStringN(str, static_cast<unsigned>(end-str)));
-    else pushValue("");
-    break;
+	// Is NULL is possible for value.string_? No.
+	char const* str;
+	char const* end;
+	bool ok = value.getString(&str, &end);
+	if (ok) pushValue(valueToQuotedStringN(str, static_cast<unsigned>(end-str)));
+	else pushValue("");
+	break;
   }
   case booleanValue:
-    pushValue(valueToString(value.asBool()));
-    break;
+	pushValue(valueToString(value.asBool()));
+	break;
   case arrayValue:
-    writeArrayValue(value);
-    break;
+	writeArrayValue(value);
+	break;
   case objectValue: {
-    Value::Members members(value.getMemberNames());
-    if (members.empty())
-      pushValue("{}");
-    else {
-      writeWithIndent("{");
-      indent();
-      Value::Members::iterator it = members.begin();
-      for (;;) {
-        JSONCPP_STRING const& name = *it;
-        Value const& childValue = value[name];
-        writeCommentBeforeValue(childValue);
-        writeWithIndent(valueToQuotedStringN(name.data(), static_cast<unsigned>(name.length())));
-        *sout_ << colonSymbol_;
-        writeValue(childValue);
-        if (++it == members.end()) {
-          writeCommentAfterValueOnSameLine(childValue);
-          break;
-        }
-        *sout_ << ",";
-        writeCommentAfterValueOnSameLine(childValue);
-      }
-      unindent();
-      writeWithIndent("}");
-    }
+	Value::Members members(value.getMemberNames());
+	if (members.empty())
+	  pushValue("{}");
+	else {
+	  writeWithIndent("{");
+	  indent();
+	  Value::Members::iterator it = members.begin();
+	  for (;;) {
+		JSONCPP_STRING const& name = *it;
+		Value const& childValue = value[name];
+		writeCommentBeforeValue(childValue);
+		writeWithIndent(valueToQuotedStringN(name.data(), static_cast<unsigned>(name.length())));
+		*sout_ << colonSymbol_;
+		writeValue(childValue);
+		if (++it == members.end()) {
+		  writeCommentAfterValueOnSameLine(childValue);
+		  break;
+		}
+		*sout_ << ",";
+		writeCommentAfterValueOnSameLine(childValue);
+	  }
+	  unindent();
+	  writeWithIndent("}");
+	}
   } break;
   }
 }
@@ -983,47 +983,47 @@ void BuiltStyledStreamWriter::writeValue(Value const& value) {
 void BuiltStyledStreamWriter::writeArrayValue(Value const& value) {
   unsigned size = value.size();
   if (size == 0)
-    pushValue("[]");
+	pushValue("[]");
   else {
-    bool isMultiLine = (cs_ == CommentStyle::All) || isMultilineArray(value);
-    if (isMultiLine) {
-      writeWithIndent("[");
-      indent();
-      bool hasChildValue = !childValues_.empty();
-      unsigned index = 0;
-      for (;;) {
-        Value const& childValue = value[index];
-        writeCommentBeforeValue(childValue);
-        if (hasChildValue)
-          writeWithIndent(childValues_[index]);
-        else {
-          if (!indented_) writeIndent();
-          indented_ = true;
-          writeValue(childValue);
-          indented_ = false;
-        }
-        if (++index == size) {
-          writeCommentAfterValueOnSameLine(childValue);
-          break;
-        }
-        *sout_ << ",";
-        writeCommentAfterValueOnSameLine(childValue);
-      }
-      unindent();
-      writeWithIndent("]");
-    } else // output on a single line
-    {
-      assert(childValues_.size() == size);
-      *sout_ << "[";
-      if (!indentation_.empty()) *sout_ << " ";
-      for (unsigned index = 0; index < size; ++index) {
-        if (index > 0)
-          *sout_ << ((!indentation_.empty()) ? ", " : ",");
-        *sout_ << childValues_[index];
-      }
-      if (!indentation_.empty()) *sout_ << " ";
-      *sout_ << "]";
-    }
+	bool isMultiLine = (cs_ == CommentStyle::All) || isMultilineArray(value);
+	if (isMultiLine) {
+	  writeWithIndent("[");
+	  indent();
+	  bool hasChildValue = !childValues_.empty();
+	  unsigned index = 0;
+	  for (;;) {
+		Value const& childValue = value[index];
+		writeCommentBeforeValue(childValue);
+		if (hasChildValue)
+		  writeWithIndent(childValues_[index]);
+		else {
+		  if (!indented_) writeIndent();
+		  indented_ = true;
+		  writeValue(childValue);
+		  indented_ = false;
+		}
+		if (++index == size) {
+		  writeCommentAfterValueOnSameLine(childValue);
+		  break;
+		}
+		*sout_ << ",";
+		writeCommentAfterValueOnSameLine(childValue);
+	  }
+	  unindent();
+	  writeWithIndent("]");
+	} else // output on a single line
+	{
+	  assert(childValues_.size() == size);
+	  *sout_ << "[";
+	  if (!indentation_.empty()) *sout_ << " ";
+	  for (unsigned index = 0; index < size; ++index) {
+		if (index > 0)
+		  *sout_ << ((!indentation_.empty()) ? ", " : ",");
+		*sout_ << childValues_[index];
+	  }
+	  if (!indentation_.empty()) *sout_ << " ";
+	  *sout_ << "]";
+	}
   }
 }
 
@@ -1032,33 +1032,33 @@ bool BuiltStyledStreamWriter::isMultilineArray(Value const& value) {
   bool isMultiLine = size * 3 >= rightMargin_;
   childValues_.clear();
   for (ArrayIndex index = 0; index < size && !isMultiLine; ++index) {
-    Value const& childValue = value[index];
-    isMultiLine = ((childValue.isArray() || childValue.isObject()) &&
-                        childValue.size() > 0);
+	Value const& childValue = value[index];
+	isMultiLine = ((childValue.isArray() || childValue.isObject()) &&
+						childValue.size() > 0);
   }
   if (!isMultiLine) // check if line length > max line length
   {
-    childValues_.reserve(size);
-    addChildValues_ = true;
-    ArrayIndex lineLength = 4 + (size - 1) * 2; // '[ ' + ', '*n + ' ]'
-    for (ArrayIndex index = 0; index < size; ++index) {
-      if (hasCommentForValue(value[index])) {
-        isMultiLine = true;
-      }
-      writeValue(value[index]);
-      lineLength += static_cast<ArrayIndex>(childValues_[index].length());
-    }
-    addChildValues_ = false;
-    isMultiLine = isMultiLine || lineLength >= rightMargin_;
+	childValues_.reserve(size);
+	addChildValues_ = true;
+	ArrayIndex lineLength = 4 + (size - 1) * 2; // '[ ' + ', '*n + ' ]'
+	for (ArrayIndex index = 0; index < size; ++index) {
+	  if (hasCommentForValue(value[index])) {
+		isMultiLine = true;
+	  }
+	  writeValue(value[index]);
+	  lineLength += static_cast<ArrayIndex>(childValues_[index].length());
+	}
+	addChildValues_ = false;
+	isMultiLine = isMultiLine || lineLength >= rightMargin_;
   }
   return isMultiLine;
 }
 
 void BuiltStyledStreamWriter::pushValue(JSONCPP_STRING const& value) {
   if (addChildValues_)
-    childValues_.push_back(value);
+	childValues_.push_back(value);
   else
-    *sout_ << value;
+	*sout_ << value;
 }
 
 void BuiltStyledStreamWriter::writeIndent() {
@@ -1068,8 +1068,8 @@ void BuiltStyledStreamWriter::writeIndent() {
   // The caller checks indented_.
 
   if (!indentation_.empty()) {
-    // In this case, drop newlines too.
-    *sout_ << '\n' << indentString_;
+	// In this case, drop newlines too.
+	*sout_ << '\n' << indentString_;
   }
 }
 
@@ -1089,18 +1089,18 @@ void BuiltStyledStreamWriter::unindent() {
 void BuiltStyledStreamWriter::writeCommentBeforeValue(Value const& root) {
   if (cs_ == CommentStyle::None) return;
   if (!root.hasComment(commentBefore))
-    return;
+	return;
 
   if (!indented_) writeIndent();
   const JSONCPP_STRING& comment = root.getComment(commentBefore);
   JSONCPP_STRING::const_iterator iter = comment.begin();
   while (iter != comment.end()) {
-    *sout_ << *iter;
-    if (*iter == '\n' &&
-       ((iter+1) != comment.end() && *(iter + 1) == '/'))
-      // writeIndent();  // would write extra newline
-      *sout_ << indentString_;
-    ++iter;
+	*sout_ << *iter;
+	if (*iter == '\n' &&
+	   ((iter+1) != comment.end() && *(iter + 1) == '/'))
+	  // writeIndent();  // would write extra newline
+	  *sout_ << indentString_;
+	++iter;
   }
   indented_ = false;
 }
@@ -1108,26 +1108,26 @@ void BuiltStyledStreamWriter::writeCommentBeforeValue(Value const& root) {
 void BuiltStyledStreamWriter::writeCommentAfterValueOnSameLine(Value const& root) {
   if (cs_ == CommentStyle::None) return;
   if (root.hasComment(commentAfterOnSameLine))
-    *sout_ << " " + root.getComment(commentAfterOnSameLine);
+	*sout_ << " " + root.getComment(commentAfterOnSameLine);
 
   if (root.hasComment(commentAfter)) {
-    writeIndent();
-    *sout_ << root.getComment(commentAfter);
+	writeIndent();
+	*sout_ << root.getComment(commentAfter);
   }
 }
 
 // static
 bool BuiltStyledStreamWriter::hasCommentForValue(const Value& value) {
   return value.hasComment(commentBefore) ||
-         value.hasComment(commentAfterOnSameLine) ||
-         value.hasComment(commentAfter);
+		 value.hasComment(commentAfterOnSameLine) ||
+		 value.hasComment(commentAfter);
 }
 
 ///////////////
 // StreamWriter
 
 StreamWriter::StreamWriter()
-    : sout_(NULL)
+	: sout_(NULL)
 {
 }
 StreamWriter::~StreamWriter()
@@ -1151,27 +1151,27 @@ StreamWriter* StreamWriterBuilder::newStreamWriter() const
   unsigned int pre = settings_["precision"].asUInt();
   CommentStyle::Enum cs = CommentStyle::All;
   if (cs_str == "All") {
-    cs = CommentStyle::All;
+	cs = CommentStyle::All;
   } else if (cs_str == "None") {
-    cs = CommentStyle::None;
+	cs = CommentStyle::None;
   } else {
-    throwRuntimeError("commentStyle must be 'All' or 'None'");
+	throwRuntimeError("commentStyle must be 'All' or 'None'");
   }
   JSONCPP_STRING colonSymbol = " : ";
   if (eyc) {
-    colonSymbol = ": ";
+	colonSymbol = ": ";
   } else if (indentation.empty()) {
-    colonSymbol = ":";
+	colonSymbol = ":";
   }
   JSONCPP_STRING nullSymbol = "null";
   if (dnp) {
-    nullSymbol.clear();
+	nullSymbol.clear();
   }
   if (pre > 17) pre = 17;
   JSONCPP_STRING endingLineFeedSymbol;
   return new BuiltStyledStreamWriter(
-      indentation, cs,
-      colonSymbol, nullSymbol, endingLineFeedSymbol, usf, pre);
+	  indentation, cs,
+	  colonSymbol, nullSymbol, endingLineFeedSymbol, usf, pre);
 }
 static void getValidWriterKeys(std::set<JSONCPP_STRING>* valid_keys)
 {
@@ -1193,10 +1193,10 @@ bool StreamWriterBuilder::validate(Json::Value* invalid) const
   Value::Members keys = settings_.getMemberNames();
   size_t n = keys.size();
   for (size_t i = 0; i < n; ++i) {
-    JSONCPP_STRING const& key = keys[i];
-    if (valid_keys.find(key) == valid_keys.end()) {
-      inv[key] = settings_[key];
-    }
+	JSONCPP_STRING const& key = keys[i];
+	if (valid_keys.find(key) == valid_keys.end()) {
+	  inv[key] = settings_[key];
+	}
   }
   return 0u == inv.size();
 }
