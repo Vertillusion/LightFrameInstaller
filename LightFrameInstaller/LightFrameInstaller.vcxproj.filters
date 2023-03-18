@@ -19,20 +19,11 @@
     <Filter Include="头文件\curl">
       <UniqueIdentifier>{a6e1f009-87c4-4b70-822f-3ee56a6d528b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="头文件\vui">
+    <Filter Include="头文件\VertexUI">
       <UniqueIdentifier>{5c4132f2-8a05-4e52-bf9c-d179555097bc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="头文件\vui\VertexUI">
-      <UniqueIdentifier>{43e26d32-24b9-44e9-9850-7151ebdce30a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\vui\VertexUI\vui.parser">
-      <UniqueIdentifier>{f9fec0a5-9312-43d1-b1fe-61abb2c864ad}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\vui\VertexUI\ExtensionAPI">
-      <UniqueIdentifier>{2a644f0a-91b0-4ac0-b863-ec50d0a414ab}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\vui\VertexUI\ExtensionAPI\chakra">
-      <UniqueIdentifier>{a1a856d2-a79c-4020-a67e-beab8ce21fc8}</UniqueIdentifier>
+    <Filter Include="头文件\VertexUI\vui.parser">
+      <UniqueIdentifier>{811d06eb-59ca-4ef4-9679-f0adffa498c5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -120,64 +111,37 @@
     <ClInclude Include="include\curl\header.h">
       <Filter>头文件\curl</Filter>
     </ClInclude>
-    <ClInclude Include="include\vui\GaussBlurFilter.hpp">
-      <Filter>头文件\vui</Filter>
+    <ClInclude Include="include\VertexUI\framework.h">
+      <Filter>头文件\VertexUI</Filter>
     </ClInclude>
-    <ClInclude Include="include\vui\LightFrame.AA.h">
-      <Filter>头文件\vui</Filter>
+    <ClInclude Include="include\VertexUI\VertexUI.ClickArea.h">
+      <Filter>头文件\VertexUI</Filter>
     </ClInclude>
-    <ClInclude Include="include\vui\LightFrame.VertexUITwinkle.hpp">
-      <Filter>头文件\vui</Filter>
+    <ClInclude Include="include\VertexUI\VertexUI.Colors.h">
+      <Filter>头文件\VertexUI</Filter>
     </ClInclude>
-    <ClInclude Include="include\vui\VertexUI\framework.h">
-      <Filter>头文件\vui\VertexUI</Filter>
+    <ClInclude Include="include\VertexUI\VertexUI.min.h">
+      <Filter>头文件\VertexUI</Filter>
     </ClInclude>
-    <ClInclude Include="include\vui\VertexUI\VertexUI.ClickArea.h">
-      <Filter>头文件\vui\VertexUI</Filter>
+    <ClInclude Include="include\VertexUI\VertexUI.Panel.h">
+      <Filter>头文件\VertexUI</Filter>
     </ClInclude>
-    <ClInclude Include="include\vui\VertexUI\VertexUI.Colors.h">
-      <Filter>头文件\vui\VertexUI</Filter>
+    <ClInclude Include="include\VertexUI\VertexUI.Window.hpp">
+      <Filter>头文件\VertexUI</Filter>
     </ClInclude>
-    <ClInclude Include="include\vui\VertexUI\VertexUI.min.h">
-      <Filter>头文件\vui\VertexUI</Filter>
+    <ClInclude Include="include\VertexUI\vui.parser\vui.parser.basic.hpp">
+      <Filter>头文件\VertexUI\vui.parser</Filter>
     </ClInclude>
-    <ClInclude Include="include\vui\VertexUI\VertexUI.Panel.h">
-      <Filter>头文件\vui\VertexUI</Filter>
-    </ClInclude>
-    <ClInclude Include="include\vui\VertexUI\VertexUI.Window.hpp">
-      <Filter>头文件\vui\VertexUI</Filter>
-    </ClInclude>
-    <ClInclude Include="include\vui\VertexUI\vui.parser\vui.parser.basic.hpp">
-      <Filter>头文件\vui\VertexUI\vui.parser</Filter>
-    </ClInclude>
-    <ClInclude Include="include\vui\VertexUI\vui.parser\vui.parser.hpp">
-      <Filter>头文件\vui\VertexUI\vui.parser</Filter>
-    </ClInclude>
-    <ClInclude Include="include\vui\ExtensionAPI\LightFrame.ExtensionAPI.hpp">
-      <Filter>头文件\vui\VertexUI\ExtensionAPI</Filter>
-    </ClInclude>
-    <ClInclude Include="include\vui\ExtensionAPI\chakra\ChakraCoreWindows.h">
-      <Filter>头文件\vui\VertexUI\ExtensionAPI\chakra</Filter>
-    </ClInclude>
-    <ClInclude Include="include\vui\ExtensionAPI\chakra\ChakraDebug.h">
-      <Filter>头文件\vui\VertexUI\ExtensionAPI\chakra</Filter>
-    </ClInclude>
-    <ClInclude Include="include\vui\ExtensionAPI\chakra\ChakraCommon.h">
-      <Filter>头文件\vui\VertexUI\ExtensionAPI\chakra</Filter>
-    </ClInclude>
-    <ClInclude Include="include\vui\ExtensionAPI\chakra\ChakraCommonWindows.h">
-      <Filter>头文件\vui\VertexUI\ExtensionAPI\chakra</Filter>
-    </ClInclude>
-    <ClInclude Include="include\vui\ExtensionAPI\chakra\ChakraCore.h">
-      <Filter>头文件\vui\VertexUI\ExtensionAPI\chakra</Filter>
+    <ClInclude Include="include\VertexUI\vui.parser\vui.parser.hpp">
+      <Filter>头文件\VertexUI\vui.parser</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LightFrameInstaller.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="include\vui\VertexUI\vui.parser\main.cpp">
-      <Filter>头文件\vui\VertexUI\vui.parser</Filter>
+    <ClCompile Include="include\VertexUI\vui.parser\main.cpp">
+      <Filter>头文件\VertexUI\vui.parser</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -194,26 +158,23 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <None Include="include\vui\VertexUI\VertexUI">
-      <Filter>头文件\vui\VertexUI</Filter>
+    <None Include="include\VertexUI\vui.parser\vui.parser.sln">
+      <Filter>头文件\VertexUI\vui.parser</Filter>
     </None>
-    <None Include="include\vui\VertexUI\vui.parser\test.vui">
-      <Filter>头文件\vui\VertexUI\vui.parser</Filter>
+    <None Include="include\VertexUI\vui.parser\vui.parser.vcxproj">
+      <Filter>头文件\VertexUI\vui.parser</Filter>
     </None>
-    <None Include="include\vui\VertexUI\vui.parser\test1.vui">
-      <Filter>头文件\vui\VertexUI\vui.parser</Filter>
+    <None Include="include\VertexUI\vui.parser\vui.parser.vcxproj.filters">
+      <Filter>头文件\VertexUI\vui.parser</Filter>
     </None>
-    <None Include="include\vui\VertexUI\vui.parser\vui.parser.sln">
-      <Filter>头文件\vui\VertexUI\vui.parser</Filter>
+    <None Include="include\VertexUI\vui.parser\vui.parser.vcxproj.user">
+      <Filter>头文件\VertexUI\vui.parser</Filter>
     </None>
-    <None Include="include\vui\VertexUI\vui.parser\vui.parser.vcxproj">
-      <Filter>头文件\vui\VertexUI\vui.parser</Filter>
+    <None Include="include\VertexUI\vui.parser\test.vui">
+      <Filter>头文件\VertexUI\vui.parser</Filter>
     </None>
-    <None Include="include\vui\VertexUI\vui.parser\vui.parser.vcxproj.filters">
-      <Filter>头文件\vui\VertexUI\vui.parser</Filter>
-    </None>
-    <None Include="include\vui\VertexUI\vui.parser\vui.parser.vcxproj.user">
-      <Filter>头文件\vui\VertexUI\vui.parser</Filter>
+    <None Include="include\VertexUI\vui.parser\test1.vui">
+      <Filter>头文件\VertexUI\vui.parser</Filter>
     </None>
   </ItemGroup>
 </Project>
