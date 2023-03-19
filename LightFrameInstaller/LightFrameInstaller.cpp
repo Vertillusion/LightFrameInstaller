@@ -3,7 +3,6 @@
 
 #include "framework.h"
 #include "LightFrameInstaller.h"
-#include <VertexUI/VertexUI.Window.hpp>
 
 #define MAX_LOADSTRING 100
 
@@ -36,6 +35,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	MyRegisterClass(hInstance);
 
 	VuiColorSystemInit();
+	TargetPanel = 0;
+	NodeNum = 0;
 
 	// 执行应用程序初始化:
 	if (!InitInstance (hInstance, nCmdShow))
@@ -105,15 +106,16 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
 	  CW_USEDEFAULT, 0, 600,350, nullptr, nullptr, hInstance, nullptr);
 
-   ShowWindow(hWnd, nCmdShow);
-   UpdateWindow(hWnd);
-
    SendMessage(hWnd, WM_CREATE, 0, 0);
    CenterWindow(hWnd);
    SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
    LONG_PTR Style = ::GetWindowLongPtr(hWnd, GWL_STYLE);
    Style = Style & ~WS_CAPTION & ~WS_SYSMENU & ~WS_SIZEBOX;
    ::SetWindowLongPtr(hWnd, GWL_STYLE, Style);
+
+   ShowWindow(hWnd, nCmdShow);
+   UpdateWindow(hWnd);
+
    VertexUI::Window::OuterShadow::DropShadow Shadow;
    Shadow.Initialize(0);
    Shadow.SetSharpness(60);
@@ -127,9 +129,60 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	  return FALSE;
    }
 
+   GlobalhWnd = hWnd;
 
    return TRUE;
 }
+
+//
+//  函数：OnTestNode()
+//  
+//  功能：测试节点
+//
+//  返回值：最快的节点索引
+// 
+//  注释：
+//    被OnUpdateMain调用，非线程，根据cpu核心数量创建线程进行204api测速
+//    查询失败时返回-1
+//
+int OnTestNode() {
+	DNS_STATUS status;
+	PDNS_RECORD pDnsRecord;
+
+
+//	解析节点
+//	参考：https://learn.microsoft.com/zh-cn/troubleshoot/windows/win32/use-dnsquery-resolve-host-names
+	status = DnsQuery(
+#ifdef _DEBUG
+		L"testnodes.dl.vertillusion.xyz",
+#else
+		L"nodes.dl.vertillusion.xyz",
+#endif
+		DNS_TYPE_TEXT,
+		DNS_QUERY_STANDARD,
+		NULL,
+		&pDnsRecord,
+		NULL
+	);
+	if (status)return -1;
+
+}
+
+
+//
+//  函数：OnUpdateMain(LPVOID)
+//
+//  功能：更新主线程
+//
+DWORD WINAPI OnUpdateMain(LPVOID lpParam) {
+	CURL* mCurl = curl_easy_init();
+	CURLcode mCode;
+	std::string mUA = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0.1 TestProject/1.0.0";
+	std::string szbuffer;
+	std::string szheader_buffer;
+	return 0;
+}
+
 
 //
 //  函数: WndProc(HWND, UINT, WPARAM, LPARAM)
@@ -178,7 +231,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				return 0;
 			}
 		}
-		add_event(Panel1);
+		add_event(MainPanel[TargetPanel]);
 		if (hState == 1) {
 			hState = 0;
 			InvalidateRect(hWnd, &rc, 0);
@@ -214,17 +267,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				GetClientRect(hWnd, &rc);
 				CreateFillArea(hWnd, hdc, VERTEXUICOLOR_MIDNIGHT);
 
-				Panel1.Set(hWnd, hdc);
+
+				MainPanel[TargetPanel].Set(hWnd, hdc);
 
 				PanelDrawCloseBtn(hWnd, hdc, rc.right - 34, 6, 25, 25, 4, RGB(187, 192, 201));
 
-				VertexUIControl Confirm;
-				Confirm.CreateCtl(L"Button2", rc.right - 100, rc.bottom - 70, 80, 45,
-					[&,hWnd] {
+				VertexUIControl Cancel;
+				Cancel.CreateCtl(L"Button2", rc.right - 100, rc.bottom - 70, 80, 45,
+					[&, hWnd] {
+						PostQuitMessage(0);
 						return 0; 
 					}
-				, L"确定", { VERTEXUICOLOR_LAVENDER });
-				Panel1.Add(Confirm);
+				, L"取消", { VERTEXUICOLOR_LAVENDER });
+				MainPanel[TargetPanel].Add(Cancel);
+
 
 				});
 			EndPaint(hWnd, &ps);
