@@ -24,6 +24,7 @@
 #define PANELS				3
 #define MAX_NODE			8
 #define USERAGENT			"Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0.1 LightframeInstaller/2.0.0 libcurl/8.0.0"
+#define MAXLATENCY			3 * 1000
 
 HWND GlobalhWnd;
 VertexUIPanel MainPanel[PANELS];
@@ -37,11 +38,16 @@ int NodeNum;
 //
 //  注释：
 //    File204：generate_204api地址，用于测速
-//    ManagerAPIURL：服务器包管理器php地址
+//    Config：服务器版本配置文件地址
+//    Reachable：标识测试阶段204api是否可达
+//    Latency：204api延迟（单位：毫秒）
 //
 struct NODE_INFO {
+	std::string Name;
 	std::string File204;
-	std::string ManagerAPIURL;
+	std::string Config;
+	bool Reachable;
+	int Latency;
 }Node[MAX_NODE];
 
 //

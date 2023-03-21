@@ -156,10 +156,10 @@ int OnTestNode() {
 #ifdef _DEBUG
 		L"testnodes.dl.vertillusion.xyz",
 #else
-		L"nodes.dl.vertillusion.xyz",
+		L"nodes-v2.dl.vertillusion.xyz",
 #endif
 		DNS_TYPE_TEXT,
-		DNS_QUERY_STANDARD,
+		DNS_QUERY_BYPASS_CACHE | DNS_QUERY_NO_LOCAL_NAME | DNS_QUERY_NO_HOSTS_FILE | DNS_QUERY_ACCEPT_TRUNCATED_RESPONSE,
 		NULL,
 		&pDnsRecord,
 		NULL
@@ -175,8 +175,58 @@ int OnTestNode() {
 	std::string mUA = USERAGENT;
 	std::string szbuffer;
 	std::string szheader_buffer;
+	int num = jRoot.size() > MAX_NODE ? MAX_NODE : jRoot.size();
+	double val;
 
-	return 0;
+	curl_global_init(CURL_GLOBAL_ALL);
+	curl_easy_setopt(mCurl, CURLOPT_USERAGENT, mUA.c_str());	//设置UserAgent
+	curl_easy_setopt(mCurl, CURLOPT_SSL_VERIFYHOST, 0L);		//设置SSL验证级别（0-2，宽松-严格）
+	curl_easy_setopt(mCurl, CURLOPT_CAINFO, "cacert.pem");		//根证书信息
+	curl_easy_setopt(mCurl, CURLOPT_MAXREDIRS, 5);				//设置最大重定向次数
+	curl_easy_setopt(mCurl, CURLOPT_FOLLOWLOCATION, 1);			//设置301、302跳转跟随location
+	curl_easy_setopt(mCurl, CURLOPT_TIMEOUT, MAXLATENCY / 1000);//超时设置
+	curl_easy_setopt(mCurl, CURLOPT_CONNECTTIMEOUT, 5L);		//连接超时设置
+	curl_easy_setopt(mCurl, CURLOPT_FAILONERROR, 1);			//服务端返回40x代码时返回错误而不是下载错误页
+	//抓取内容后，回调函数  
+	curl_easy_setopt(mCurl, CURLOPT_WRITEFUNCTION, curl_default_callback);
+	curl_easy_setopt(mCurl, CURLOPT_WRITEDATA, &szbuffer);
+	//抓取头信息，回调函数  
+	curl_easy_setopt(mCurl, CURLOPT_HEADERFUNCTION, curl_default_callback);
+	curl_easy_setopt(mCurl, CURLOPT_HEADERDATA, &szheader_buffer);
+
+	for (int i = 0; i < num; i++) {
+		szbuffer = "";
+		szheader_buffer = "";
+
+		Node[i].Name = jRoot[i]["name"].asString();
+		Node[i].File204 = jRoot[i]["204api"].asString();
+		Node[i].Config = jRoot[i]["config"].asString();
+		Node[i].Reachable = false;
+
+		curl_easy_setopt(mCurl, CURLOPT_URL, jRoot[i]["204api"].asCString());
+
+		mCode = curl_easy_perform(mCurl);
+		if (mCode != CURLE_OK)
+			continue;
+
+		Node[i].Reachable = true;
+
+		mCode = curl_easy_getinfo(mCurl, CURLINFO_TOTAL_TIME, &val);
+		if ((CURLE_OK == mCode) && (val > 0))
+			Node[i].Latency = val * 1000;
+	}
+
+	curl_easy_cleanup(mCurl);
+	curl_global_cleanup();
+
+	int pos = -1,
+		min = MAXLATENCY;
+
+	for (int i = 0; i < num; i++)
+		if (Node[i].Reachable && Node[i].Latency < min)
+			pos = i, min = Node[i].Latency;
+
+	return pos;
 }
 
 DWORD WINAPI OnUpdateMain(LPVOID lpParam) {
