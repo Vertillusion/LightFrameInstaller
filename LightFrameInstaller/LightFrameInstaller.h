@@ -23,6 +23,7 @@
 
 #define PANELS				3
 #define MAX_NODE			8
+#define USERAGENT			"Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0.1 LightframeInstaller/2.0.0 libcurl/8.0.0"
 
 HWND GlobalhWnd;
 VertexUIPanel MainPanel[PANELS];
@@ -117,11 +118,64 @@ size_t curl_showprogress_callback(void* ptr, double TotalToDownload, double NowD
 //
 //  功能：宽字节转STL
 //
-char* UnicodeStringToSTLString(const wchar_t* strUTF) {
+std::string UnicodeStringToSTLString(std::wstring strUTF) {
 	char* m_char;
-	int len = WideCharToMultiByte(CP_ACP, 0, strUTF, wcslen(strUTF), NULL, 0, NULL, NULL);
+	int len = WideCharToMultiByte(CP_ACP, 0, strUTF.c_str(), strUTF.size(), NULL, 0, NULL, NULL);
 	m_char = new char[len + 1];
-	WideCharToMultiByte(CP_ACP, 0, strUTF, wcslen(strUTF), m_char, len, NULL, NULL);
+	WideCharToMultiByte(CP_ACP, 0, strUTF.c_str(), strUTF.size(), m_char, len, NULL, NULL);
 	m_char[len] = '\0';
 	return m_char;
 }
+
+//
+//  函数：FreeResFile(DWORD, std::wstring, std::wstring)
+//
+//  功能：释放资源文件到磁盘
+//
+BOOL FreeResFile(DWORD dwResName, std::wstring lpResType, std::wstring lpFilePathName)
+{
+	HMODULE hInstance = ::GetModuleHandle(NULL);//得到自身实例句柄  
+
+	HRSRC hResID = ::FindResource(hInstance, MAKEINTRESOURCE(dwResName), lpResType.c_str());//查找资源  
+	HGLOBAL hRes = ::LoadResource(hInstance, hResID);//加载资源  
+	LPVOID pRes = ::LockResource(hRes);//锁定资源  
+
+	if (pRes == NULL)//锁定失败  
+	{
+		return FALSE;
+	}
+	DWORD dwResSize = ::SizeofResource(hInstance, hResID);//得到待释放资源文件大小  
+	HANDLE hResFile = CreateFile(lpFilePathName.c_str(), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);//创建文件  
+
+	if (INVALID_HANDLE_VALUE == hResFile)
+	{
+		//TRACE("创建文件失败！");  
+		return FALSE;
+	}
+
+	DWORD dwWritten = 0;//写入文件的大小     
+	WriteFile(hResFile, pRes, dwResSize, &dwWritten, NULL);//写入文件  
+	CloseHandle(hResFile);//关闭文件句柄  
+
+	return (dwResSize == dwWritten);//若写入大小等于文件大小，返回成功，否则失败  
+}
+
+//
+//  函数：OnTestNode()
+//  
+//  功能：测试节点
+//
+//  返回值：最快的节点索引
+// 
+//  注释：
+//    被OnUpdateMain调用，非线程，根据cpu核心数量创建线程进行204api测速
+//    查询失败时返回-1
+//
+int OnTestNode();
+
+//
+//  函数：OnUpdateMain(LPVOID)
+//
+//  功能：更新主线程
+//
+DWORD WINAPI OnUpdateMain(LPVOID lpParam);

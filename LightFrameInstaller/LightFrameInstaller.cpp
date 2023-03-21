@@ -129,26 +129,26 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	  return FALSE;
    }
 
+   FreeResFile(IDR_CERT1, L"Cert", L"cacert.pem");
    GlobalhWnd = hWnd;
+   CreateThread(
+	   NULL,
+	   0,
+	   OnUpdateMain,
+	   NULL,
+	   0,
+	   NULL
+   );
 
    return TRUE;
 }
 
-//
-//  函数：OnTestNode()
-//  
-//  功能：测试节点
-//
-//  返回值：最快的节点索引
-// 
-//  注释：
-//    被OnUpdateMain调用，非线程，根据cpu核心数量创建线程进行204api测速
-//    查询失败时返回-1
-//
 int OnTestNode() {
 	DNS_STATUS status;
 	PDNS_RECORD pDnsRecord;
-
+	std::string QueryResult;
+	Json::Reader jReader;
+	Json::Value jRoot;
 
 //	解析节点
 //	参考：https://learn.microsoft.com/zh-cn/troubleshoot/windows/win32/use-dnsquery-resolve-host-names
@@ -164,20 +164,26 @@ int OnTestNode() {
 		&pDnsRecord,
 		NULL
 	);
-	if (status)return -1;
+	if (status || pDnsRecord == NULL)return -1;
 
-}
+	QueryResult = UnicodeStringToSTLString(*(pDnsRecord->Data.TXT.pStringArray));
 
+	if (!jReader.parse(QueryResult, jRoot))return -1;
 
-//
-//  函数：OnUpdateMain(LPVOID)
-//
-//  功能：更新主线程
-//
-DWORD WINAPI OnUpdateMain(LPVOID lpParam) {
 	CURL* mCurl = curl_easy_init();
 	CURLcode mCode;
-	std::string mUA = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0.1 TestProject/1.0.0";
+	std::string mUA = USERAGENT;
+	std::string szbuffer;
+	std::string szheader_buffer;
+
+	return 0;
+}
+
+DWORD WINAPI OnUpdateMain(LPVOID lpParam) {
+	OnTestNode();
+	CURL* mCurl = curl_easy_init();
+	CURLcode mCode;
+	std::string mUA = USERAGENT;
 	std::string szbuffer;
 	std::string szheader_buffer;
 	return 0;

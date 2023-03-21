@@ -1,0 +1,12 @@
+{
+	[
+		"name":"main",
+		"204api":"http:\/\/dl.vertillusion.xyz\/generate_204",
+		"config":"http:\/\/dl.vertillusion.xyz\/lightframe\/release\/config.json"
+	],
+	[
+		"name":"",
+		"204api":"",
+		"config":""
+	]
+}
