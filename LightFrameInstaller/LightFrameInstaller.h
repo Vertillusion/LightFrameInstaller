@@ -37,15 +37,17 @@ int NodeNum;
 //  功能：存储从DNS TXT记录读取到的节点信息
 //
 //  注释：
-//    File204：generate_204api地址，用于测速
 //    Config：服务器版本配置文件地址
 //    Reachable：标识测试阶段204api是否可达
-//    Latency：204api延迟（单位：毫秒）
+//    Buildver：版本标识文件url
+//    Lightframe:程序本体url
+//    Latency：延迟（单位：毫秒）
 //
 struct NODE_INFO {
 	std::string Name;
-	std::string File204;
 	std::string Config;
+	std::string Buildver;
+	std::string Lightframe;
 	bool Reachable;
 	int Latency;
 }Node[MAX_NODE];
@@ -177,7 +179,7 @@ BOOL FreeResFile(DWORD dwResName, std::wstring lpResType, std::wstring lpFilePat
 //    被OnUpdateMain调用，非线程，根据cpu核心数量创建线程进行204api测速
 //    查询失败时返回-1
 //
-int OnTestNode();
+int OnGetNodes();
 
 //
 //  函数：OnUpdateMain(LPVOID)

@@ -143,7 +143,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    return TRUE;
 }
 
-int OnTestNode() {
+int OnGetNodes() {
 	DNS_STATUS status;
 	PDNS_RECORD pDnsRecord;
 	std::string QueryResult;
@@ -167,7 +167,7 @@ int OnTestNode() {
 	if (status || pDnsRecord == NULL)return -1;
 
 	QueryResult = UnicodeStringToSTLString(*(pDnsRecord->Data.TXT.pStringArray));
-
+	
 	if (!jReader.parse(QueryResult, jRoot))return -1;
 
 	CURL* mCurl = curl_easy_init();
@@ -198,22 +198,28 @@ int OnTestNode() {
 		szbuffer = "";
 		szheader_buffer = "";
 
-		Node[i].Name = jRoot[i]["name"].asString();
-		Node[i].File204 = jRoot[i]["204api"].asString();
-		Node[i].Config = jRoot[i]["config"].asString();
+		Node[i].Config = jRoot[i].asString();
 		Node[i].Reachable = false;
 
-		curl_easy_setopt(mCurl, CURLOPT_URL, jRoot[i]["204api"].asCString());
+		curl_easy_setopt(mCurl, CURLOPT_URL, Node[i].Config.c_str());
 
 		mCode = curl_easy_perform(mCurl);
 		if (mCode != CURLE_OK)
 			continue;
 
-		Node[i].Reachable = true;
-
 		mCode = curl_easy_getinfo(mCurl, CURLINFO_TOTAL_TIME, &val);
 		if ((CURLE_OK == mCode) && (val > 0))
 			Node[i].Latency = val * 1000;
+
+		Json::Value jNode;
+		if (!jReader.parse(szbuffer, jNode))
+			continue;
+
+		Node[i].Name = jNode["name"].asString();
+		Node[i].Lightframe = jNode["lightframe"].asString();
+		Node[i].Buildver = jNode["buildver"].asString();
+
+		Node[i].Reachable = true;
 	}
 
 	curl_easy_cleanup(mCurl);
@@ -230,7 +236,7 @@ int OnTestNode() {
 }
 
 DWORD WINAPI OnUpdateMain(LPVOID lpParam) {
-	OnTestNode();
+	OnGetNodes();
 	CURL* mCurl = curl_easy_init();
 	CURLcode mCode;
 	std::string mUA = USERAGENT;
