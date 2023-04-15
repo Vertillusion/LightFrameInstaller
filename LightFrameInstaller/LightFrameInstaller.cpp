@@ -129,7 +129,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	  return FALSE;
    }
 
-   FreeResFile(IDR_CERT1, L"Cert", L"cacert.pem");
    GlobalhWnd = hWnd;
    CreateThread(
 	   NULL,
@@ -147,8 +146,6 @@ int OnGetNodes() {
 	DNS_STATUS status;
 	PDNS_RECORD pDnsRecord;
 	std::string QueryResult;
-	Json::Reader jReader;
-	Json::Value jRoot;
 
 //	解析节点
 //	参考：https://learn.microsoft.com/zh-cn/troubleshoot/windows/win32/use-dnsquery-resolve-host-names
@@ -165,83 +162,10 @@ int OnGetNodes() {
 		NULL
 	);
 	if (status || pDnsRecord == NULL)return -1;
-
-	QueryResult = UnicodeStringToSTLString(*(pDnsRecord->Data.TXT.pStringArray));
-	
-	if (!jReader.parse(QueryResult, jRoot))return -1;
-
-	CURL* mCurl = curl_easy_init();
-	CURLcode mCode;
-	std::string mUA = USERAGENT;
-	std::string szbuffer;
-	std::string szheader_buffer;
-	int num = jRoot.size() > MAX_NODE ? MAX_NODE : jRoot.size();
-	double val;
-
-	curl_global_init(CURL_GLOBAL_ALL);
-	curl_easy_setopt(mCurl, CURLOPT_USERAGENT, mUA.c_str());	//设置UserAgent
-	curl_easy_setopt(mCurl, CURLOPT_SSL_VERIFYHOST, 0L);		//设置SSL验证级别（0-2，宽松-严格）
-	curl_easy_setopt(mCurl, CURLOPT_CAINFO, "cacert.pem");		//根证书信息
-	curl_easy_setopt(mCurl, CURLOPT_MAXREDIRS, 5);				//设置最大重定向次数
-	curl_easy_setopt(mCurl, CURLOPT_FOLLOWLOCATION, 1);			//设置301、302跳转跟随location
-	curl_easy_setopt(mCurl, CURLOPT_TIMEOUT, MAXLATENCY / 1000);//超时设置
-	curl_easy_setopt(mCurl, CURLOPT_CONNECTTIMEOUT, 5L);		//连接超时设置
-	curl_easy_setopt(mCurl, CURLOPT_FAILONERROR, 1);			//服务端返回40x代码时返回错误而不是下载错误页
-	//抓取内容后，回调函数  
-	curl_easy_setopt(mCurl, CURLOPT_WRITEFUNCTION, curl_default_callback);
-	curl_easy_setopt(mCurl, CURLOPT_WRITEDATA, &szbuffer);
-	//抓取头信息，回调函数  
-	curl_easy_setopt(mCurl, CURLOPT_HEADERFUNCTION, curl_default_callback);
-	curl_easy_setopt(mCurl, CURLOPT_HEADERDATA, &szheader_buffer);
-
-	for (int i = 0; i < num; i++) {
-		szbuffer = "";
-		szheader_buffer = "";
-
-		Node[i].Config = jRoot[i].asString();
-		Node[i].Reachable = false;
-
-		curl_easy_setopt(mCurl, CURLOPT_URL, Node[i].Config.c_str());
-
-		mCode = curl_easy_perform(mCurl);
-		if (mCode != CURLE_OK)
-			continue;
-
-		mCode = curl_easy_getinfo(mCurl, CURLINFO_TOTAL_TIME, &val);
-		if ((CURLE_OK == mCode) && (val > 0))
-			Node[i].Latency = val * 1000;
-
-		Json::Value jNode;
-		if (!jReader.parse(szbuffer, jNode))
-			continue;
-
-		Node[i].Name = jNode["name"].asString();
-		Node[i].Lightframe = jNode["lightframe"].asString();
-		Node[i].Buildver = jNode["buildver"].asString();
-
-		Node[i].Reachable = true;
-	}
-
-	curl_easy_cleanup(mCurl);
-	curl_global_cleanup();
-
-	int pos = -1,
-		min = MAXLATENCY;
-
-	for (int i = 0; i < num; i++)
-		if (Node[i].Reachable && Node[i].Latency < min)
-			pos = i, min = Node[i].Latency;
-
-	return pos;
 }
 
 DWORD WINAPI OnUpdateMain(LPVOID lpParam) {
 	OnGetNodes();
-	CURL* mCurl = curl_easy_init();
-	CURLcode mCode;
-	std::string mUA = USERAGENT;
-	std::string szbuffer;
-	std::string szheader_buffer;
 	return 0;
 }
 
