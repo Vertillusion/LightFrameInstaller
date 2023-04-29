@@ -6,6 +6,7 @@
 #include <VertexUI/VertexUI.min.h>
 #include <VertexUI/VertexUI.Window.hpp>
 #include <WinDNS.h>
+#include <base64/base64.h>
 
 #pragma comment(lib,"Dnsapi.lib")
 

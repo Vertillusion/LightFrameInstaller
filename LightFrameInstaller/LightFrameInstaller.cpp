@@ -162,6 +162,8 @@ int OnGetNodes() {
 		NULL
 	);
 	if (status || pDnsRecord == NULL)return -1;
+
+
 }
 
 DWORD WINAPI OnUpdateMain(LPVOID lpParam) {

@@ -19,6 +19,9 @@
     <Filter Include="头文件\VertexUI\vui.parser">
       <UniqueIdentifier>{f9fec0a5-9312-43d1-b1fe-61abb2c864ad}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\Base64">
+      <UniqueIdentifier>{dca52720-1442-4add-a724-771ed5f7a584}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -56,6 +59,9 @@
     </ClInclude>
     <ClInclude Include="include\VertexUI\vui.parser\vui.parser.hpp">
       <Filter>头文件\VertexUI\vui.parser</Filter>
+    </ClInclude>
+    <ClInclude Include="include\base64\base64.h">
+      <Filter>头文件\Base64</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

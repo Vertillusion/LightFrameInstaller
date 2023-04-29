@@ -156,6 +156,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
+    <ClInclude Include="include\base64\base64.h" />
     <ClInclude Include="include\VertexUI\framework.h" />
     <ClInclude Include="include\VertexUI\VertexUI.ClickArea.h" />
     <ClInclude Include="include\VertexUI\VertexUI.Colors.h" />
