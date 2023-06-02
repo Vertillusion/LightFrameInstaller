@@ -118,7 +118,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	UnzipNewLightFrame(lpFileName);
 
-
+	DeleteFile(L"LightFrame.zip");
 
 	return 0;
 }
