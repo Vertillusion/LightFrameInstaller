@@ -156,20 +156,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
-    <ClInclude Include="include\base64\base64.h" />
-    <ClInclude Include="include\VertexUI\framework.h" />
-    <ClInclude Include="include\VertexUI\VertexUI.ClickArea.h" />
-    <ClInclude Include="include\VertexUI\VertexUI.Colors.h" />
-    <ClInclude Include="include\VertexUI\VertexUI.min.h" />
-    <ClInclude Include="include\VertexUI\VertexUI.Panel.h" />
-    <ClInclude Include="include\VertexUI\VertexUI.Window.hpp" />
-    <ClInclude Include="include\VertexUI\vui.parser\vui.parser.basic.hpp" />
-    <ClInclude Include="include\VertexUI\vui.parser\vui.parser.hpp" />
+    <ClInclude Include="include\unzip.h" />
     <ClInclude Include="LightFrameInstaller.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="include\unzip.cpp" />
     <ClCompile Include="LightFrameInstaller.cpp" />
   </ItemGroup>
   <ItemGroup>

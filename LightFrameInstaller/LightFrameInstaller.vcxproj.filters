@@ -13,15 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="头文件\VertexUI">
-      <UniqueIdentifier>{43e26d32-24b9-44e9-9850-7151ebdce30a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\VertexUI\vui.parser">
-      <UniqueIdentifier>{f9fec0a5-9312-43d1-b1fe-61abb2c864ad}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\Base64">
-      <UniqueIdentifier>{dca52720-1442-4add-a724-771ed5f7a584}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -35,33 +26,6 @@
     </ClInclude>
     <ClInclude Include="LightFrameInstaller.h">
       <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\VertexUI\framework.h">
-      <Filter>头文件\VertexUI</Filter>
-    </ClInclude>
-    <ClInclude Include="include\VertexUI\VertexUI.ClickArea.h">
-      <Filter>头文件\VertexUI</Filter>
-    </ClInclude>
-    <ClInclude Include="include\VertexUI\VertexUI.Colors.h">
-      <Filter>头文件\VertexUI</Filter>
-    </ClInclude>
-    <ClInclude Include="include\VertexUI\VertexUI.min.h">
-      <Filter>头文件\VertexUI</Filter>
-    </ClInclude>
-    <ClInclude Include="include\VertexUI\VertexUI.Panel.h">
-      <Filter>头文件\VertexUI</Filter>
-    </ClInclude>
-    <ClInclude Include="include\VertexUI\VertexUI.Window.hpp">
-      <Filter>头文件\VertexUI</Filter>
-    </ClInclude>
-    <ClInclude Include="include\VertexUI\vui.parser\vui.parser.basic.hpp">
-      <Filter>头文件\VertexUI\vui.parser</Filter>
-    </ClInclude>
-    <ClInclude Include="include\VertexUI\vui.parser\vui.parser.hpp">
-      <Filter>头文件\VertexUI\vui.parser</Filter>
-    </ClInclude>
-    <ClInclude Include="include\base64\base64.h">
-      <Filter>头文件\Base64</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
