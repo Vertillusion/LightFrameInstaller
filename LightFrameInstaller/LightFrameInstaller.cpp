@@ -8,14 +8,19 @@
 #include <shellapi.h>
 #pragma comment(lib,"Urlmon.lib")
 
-#define ERRMSG_UNNECESSARY L"更新失败：网络错误"
-#define ERRMSG_NETWORKERR L"更新失败：网络错误"
+#define MSG_BEGIN				L"按确定开始后台更新\r\n更新完成后将自动重启LightFrame"
+#define MSG_CANCEL				L"用户取消"
+#define MSG_INVALIDPARAGRAM		L"无效参数！"
+#define MSG_UNNECESSARY			L"LightFrame已是最新"
+#define MSG_NETWORKERR			L"更新失败：网络错误"
+#define URL_LIGHTFRAME			L"https://dl.vertillusion.xyz/lightframe/release/LightFrame.zip"
+#define URL_BUILDVER			L"https://dl.vertillusion.xyz/lightframe/release/buildver"
 
 int GetRemoteVer() {
 	IStream* stream;
 	HRESULT ret = URLOpenBlockingStreamW(
 		nullptr,
-		L"https://dl.vertillusion.xyz/lightframe/release/buildver",
+		URL_BUILDVER,
 		&stream,
 		0,
 		nullptr
@@ -43,7 +48,7 @@ int GetRemoteVer() {
 bool DownloadZipFile() {
 	HRESULT ret = URLDownloadToFileW(
 		nullptr,
-		L"https://dl.vertillusion.xyz/lightframe/release/LightFrame.zip",
+		URL_LIGHTFRAME,
 		L"LightFrame.zip",
 		0,
 		nullptr
@@ -74,6 +79,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	LPCWSTR lpFileName;
 
 	lpFileName = L"LightFrame.exe";
+	LocalVer = -1;
 
 	for (int i = 1; i < __argc; i++) {
 		if (wcsstr(__wargv[i], L"--CurrentVer"))
@@ -81,19 +87,29 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		if (wcsstr(__wargv[i], L"--FileName"))
 			lpFileName = __wargv[++i];
 	}
+
+	if (LocalVer == -1) {
+		MessageBox(NULL, MSG_INVALIDPARAGRAM, L"Error", MB_OK | MB_ICONERROR);
+		return 0;
+	}
 	
+	if (MessageBox(NULL, MSG_BEGIN, L"LightFrameInstaller", MB_YESNO) == IDNO) {
+		MessageBox(NULL, MSG_CANCEL, L"Info", MB_OK);
+		return 0;
+	}
+
 	RemoteVer = GetRemoteVer();
 	if (RemoteVer == -1) {
-		MessageBox(NULL, ERRMSG_NETWORKERR, L"Error", MB_OK | MB_ICONERROR);
+		MessageBox(NULL, MSG_NETWORKERR, L"Error", MB_OK | MB_ICONERROR);
 		return 0;
 	}
 	if(RemoteVer<=LocalVer){
-		MessageBox(NULL, ERRMSG_UNNECESSARY, L"Info", MB_OK | MB_ICONINFORMATION);
+		MessageBox(NULL, MSG_UNNECESSARY, L"Info", MB_OK | MB_ICONINFORMATION);
 		return 0;
 	}
 
 	if(DownloadZipFile()) {
-		MessageBox(NULL, ERRMSG_NETWORKERR, L"Error", MB_OK | MB_ICONERROR);
+		MessageBox(NULL, MSG_NETWORKERR, L"Error", MB_OK | MB_ICONERROR);
 		return 0;
 	}
 
@@ -101,6 +117,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	DeleteFile(lpFileName);
 
 	UnzipNewLightFrame(lpFileName);
+
+
 
 	return 0;
 }
