@@ -97,7 +97,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		MessageBox(NULL, MSG_CANCEL, L"Info", MB_OK);
 		return 0;
 	}
-
 	RemoteVer = GetRemoteVer();
 	if (RemoteVer == -1) {
 		MessageBox(NULL, MSG_NETWORKERR, L"Error", MB_OK | MB_ICONERROR);
@@ -107,18 +106,20 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		MessageBox(NULL, MSG_UNNECESSARY, L"Info", MB_OK | MB_ICONINFORMATION);
 		return 0;
 	}
-
+	
 	if(DownloadZipFile()) {
 		MessageBox(NULL, MSG_NETWORKERR, L"Error", MB_OK | MB_ICONERROR);
 		return 0;
 	}
-
+	
 	CloseLightFrame();
 	DeleteFile(lpFileName);
 
 	UnzipNewLightFrame(lpFileName);
 
 	DeleteFile(L"LightFrame.zip");
+
+	ShellExecute(NULL, L"open", lpFileName, NULL, NULL, SW_SHOWNORMAL);
 
 	return 0;
 }
