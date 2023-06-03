@@ -8,6 +8,7 @@
 #include <shellapi.h>
 #pragma comment(lib,"Urlmon.lib")
 
+#define PROGRAM_TITLE			L"LightFrame Installer"
 #define MSG_BEGIN				L"按确定开始后台更新\r\n更新完成后将自动重启LightFrame"
 #define MSG_CANCEL				L"用户取消"
 #define MSG_INVALIDPARAGRAM		L"无效参数！"
@@ -89,26 +90,26 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	}
 
 	if (LocalVer == -1) {
-		MessageBox(NULL, MSG_INVALIDPARAGRAM, L"Error", MB_OK | MB_ICONERROR);
+		MessageBox(NULL, MSG_INVALIDPARAGRAM, PROGRAM_TITLE, MB_OK | MB_ICONERROR);
 		return 0;
 	}
 	
-	if (MessageBox(NULL, MSG_BEGIN, L"LightFrameInstaller", MB_YESNO) == IDNO) {
-		MessageBox(NULL, MSG_CANCEL, L"Info", MB_OK);
+	if (MessageBox(NULL, MSG_BEGIN, PROGRAM_TITLE, MB_YESNO) == IDNO) {
+		MessageBox(NULL, MSG_CANCEL, PROGRAM_TITLE, MB_OK);
 		return 0;
 	}
 	RemoteVer = GetRemoteVer();
 	if (RemoteVer == -1) {
-		MessageBox(NULL, MSG_NETWORKERR, L"Error", MB_OK | MB_ICONERROR);
+		MessageBox(NULL, MSG_NETWORKERR, PROGRAM_TITLE, MB_OK | MB_ICONERROR);
 		return 0;
 	}
 	if(RemoteVer<=LocalVer){
-		MessageBox(NULL, MSG_UNNECESSARY, L"Info", MB_OK | MB_ICONINFORMATION);
+		MessageBox(NULL, MSG_UNNECESSARY, PROGRAM_TITLE, MB_OK | MB_ICONINFORMATION);
 		return 0;
 	}
 	
 	if(DownloadZipFile()) {
-		MessageBox(NULL, MSG_NETWORKERR, L"Error", MB_OK | MB_ICONERROR);
+		MessageBox(NULL, MSG_NETWORKERR, PROGRAM_TITLE, MB_OK | MB_ICONERROR);
 		return 0;
 	}
 	
