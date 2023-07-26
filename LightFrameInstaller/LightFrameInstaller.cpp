@@ -14,8 +14,8 @@
 #define MSG_INVALIDPARAGRAM		L"无效参数！"
 #define MSG_UNNECESSARY			L"LightFrame已是最新"
 #define MSG_NETWORKERR			L"更新失败：网络错误"
-#define URL_LIGHTFRAME			L"https://dl.vertillusion.xyz/lightframe/release/LightFrame.zip"
-#define URL_BUILDVER			L"https://dl.vertillusion.xyz/lightframe/release/buildver"
+#define URL_LIGHTFRAME			L"https://dl.vertillusion.com/lightframe/release/LightFrame.zip"
+#define URL_BUILDVER			L"https://dl.vertillusion.com/lightframe/release/buildver"
 
 int GetRemoteVer() {
 	IStream* stream;
